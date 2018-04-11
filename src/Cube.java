@@ -5,6 +5,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 
 import javax.swing.*;
+import lexer.TextLineNumber;
 
 public class Cube extends JPanel {
 
@@ -17,6 +18,9 @@ public class Cube extends JPanel {
 	private String topPanel2IconNamesEnter[] = {"src/images/open_enter.png", "src/images/new_enter.png", "src/images/save_enter.png", "src/images/close_enter.png"};
 	private String topPanel2IconNames[] = {"src/images/open.png", "src/images/new.png", "src/images/save.png", "src/images/close.png"};
 	private Handler handler;
+  private JTextPane textPane;
+	private JScrollPane scrollPane;
+	private TextLineNumber tln;
 	public Cube() {
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(1400,700));
@@ -90,10 +94,14 @@ public class Cube extends JPanel {
 	}
 	
 	private void createCenterPanel() {
-		centerPanel.setPreferredSize(new Dimension(1200,700));
-		centerPanel.setBackground(Color.GREEN);
-		centerPanel.setBounds(200,50,1200,700);
-		this.add(centerPanel);
+    textPane = new JTextPane();
+		scrollPane = new JScrollPane(textPane);
+		tln = new TextLineNumber(textPane);
+		scrollPane.setRowHeaderView( tln );
+		
+		scrollPane.setBounds(200,50,1200,700);
+    
+		this.add(scrollPane);
 	}
 	
 	private class Handler implements MouseListener{
@@ -103,6 +111,7 @@ public class Cube extends JPanel {
 			if(topPanel1Labels[0] == e.getSource()) {
 				createFileWindow();
 			}else if(topPanel2Labels[0] == e.getSource()) {
+        System.out.println("I came here");
 				openFiles();
 			}
 			
