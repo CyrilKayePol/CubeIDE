@@ -19,6 +19,16 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import lexer.TextLineNumber;
 
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.ButtonGroup;
+import javax.swing.JMenuBar;
+import javax.swing.KeyStroke;
+
 public class Cube extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -44,13 +54,56 @@ public class Cube extends JPanel {
 	
 	public Cube() {
 		this.setLayout(null);
-		this.setPreferredSize(new Dimension(1400,700));
-		this.setBackground(new Color(250,250,250));
-		
+		this.setBackground(Color.GRAY);			
+
 		init();
 		createSidePanel();
-		createTopPanel();
+		//createTopPanel();
 		createCenterPanel();
+	}
+
+	public JMenuBar createMenuBar(){
+		//Where the GUI is created:
+		JMenuBar menuBar;
+		JMenu menu, submenu;
+		JMenuItem menuItem;
+		JRadioButtonMenuItem rbMenuItem;
+		JCheckBoxMenuItem cbMenuItem;
+
+		//Create the menu bar.
+		menuBar = new JMenuBar();
+
+		//Build the first menu.
+		menu = new JMenu("File");
+		menu.setMnemonic(KeyEvent.VK_A);
+		menu.getAccessibleContext().setAccessibleDescription(
+		        "The only menu in this program that has menu items");
+		menuBar.add(menu);
+
+		//a group of JMenuItems
+		menuItem = new JMenuItem("New file", KeyEvent.VK_T);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));		
+		menu.add(menuItem);
+
+		menuItem = new JMenuItem("Open file");
+		//menuItem.setMnemonic(KeyEvent.VK_B);
+		menu.add(menuItem);		
+
+		menuItem = new JMenuItem("Save");
+		//menuItem.setMnemonic(KeyEvent.VK_B);
+		menu.add(menuItem);		
+
+		menuItem = new JMenuItem("Save as...");
+		//menuItem.setMnemonic(KeyEvent.VK_B);
+		menu.add(menuItem);										
+
+		menu = new JMenu("Developers");		
+		menuBar.add(menu);
+
+		menu = new JMenu("Help");		
+		menuBar.add(menu);
+
+		return menuBar;
 	}
 	
 	private void init() {
@@ -70,7 +123,7 @@ public class Cube extends JPanel {
 	
 	private void createSidePanel() {
 		sidePanel.setPreferredSize(new Dimension(200, 700));
-		sidePanel.setBounds(0,50,200,700);			
+		sidePanel.setBounds(2,0,220,700);			
 		
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         treeModel = new DefaultTreeModel(root);
@@ -87,18 +140,15 @@ public class Cube extends JPanel {
         JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView());
         chooser.setCurrentDirectory(f);
 
-        fileSystemView = chooser.getFileSystemView();
+ 		File[] files = chooser.getCurrentDirectory().listFiles();
+ 		DefaultMutableTreeNode node = new DefaultMutableTreeNode(files[0].getParentFile());
+        root.add( node );
 
-        File roots = fileSystemView.getDefaultDirectory();
- 
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode(roots);
-            root.add( node );
-            File[] files = fileSystemView.getFiles(roots, true);
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    node.add(new DefaultMutableTreeNode(file));
-                }
-            }        
+        for (File file : files) {
+        	if (file.isDirectory() || file.isFile()) {
+            	node.add(new DefaultMutableTreeNode(file));
+            }
+        }          
 
         tree = new JTree(treeModel);
         tree.setRootVisible(false);
@@ -111,8 +161,8 @@ public class Cube extends JPanel {
         
         Dimension preferredSize = treeScroll.getPreferredSize();
         Dimension widePreferred = new Dimension(
-            200,
-            (int)preferredSize.getHeight());
+            210,
+            650);
         treeScroll.setPreferredSize( widePreferred );
         
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,treeScroll,null);
@@ -161,22 +211,20 @@ public class Cube extends JPanel {
 	}
 	
 	private void createCenterPanel() {
-
 		
 		textPane = new JTextPane();
 		scrollPane = new JScrollPane(textPane);
 		tln = new TextLineNumber(textPane);
 		scrollPane.setRowHeaderView( tln );
 		
-		scrollPane.setBounds(0,0,1200,700);
+		scrollPane.setBounds(0,0,1300,700);
 		centerPanel.setLayout(null);
-		centerPanel.setPreferredSize(new Dimension(1200, 700));
+		centerPanel.setPreferredSize(new Dimension(200, 700));
 		centerPanel.add(scrollPane);
-		centerPanel.setBounds(200,50,1200,700);
+		centerPanel.setBounds(225,0,1200,700);
 		this.add(centerPanel);
 
 	}
-
 	
 	private class Handler implements MouseListener{
 
@@ -284,8 +332,7 @@ public class Cube extends JPanel {
 			filePanels[a].addMouseListener(handler);
 			pan.add(filePanels[a]);
 		}
-		
-		
+				
 		win.setSize(410,200);
 		win.add(pan);
 		win.setLocationRelativeTo(this);
@@ -314,7 +361,7 @@ public class Cube extends JPanel {
 	                    File[] files = fileSystemView.getFiles(file, true); //!!
 	                    if (node.isLeaf()) {
 	                        for (File child : files) {
-	                            if (child.isDirectory() || child.getName().endsWith(".cube") || child.getName().endsWith(".txt")) {
+	                            if (child.isDirectory() || child.isFile()) {
 	                                publish(child);
 	                            }
 	                        }
