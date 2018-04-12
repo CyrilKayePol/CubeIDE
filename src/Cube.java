@@ -11,13 +11,13 @@ import java.io.File;
 import java.util.List;
 
 import javax.swing.*;
+<<<<<<< HEAD
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-
 import lexer.TextLineNumber;
 
 public class Cube extends JPanel {
@@ -32,6 +32,7 @@ public class Cube extends JPanel {
 	private String topPanel2IconNames[] = {"src/images/open.png", "src/images/new.png", "src/images/save.png", "src/images/close.png"};
 	private JPanel filePanels[] = new JPanel[8];
 	private Handler handler;
+
 	private JTextPane textPane;
 	private JScrollPane scrollPane;
 	private TextLineNumber tln;
@@ -41,7 +42,6 @@ public class Cube extends JPanel {
 	private JTree tree;
 	private JWindow win;
 	private JPanel centerPanel;
-	
 	
 	public Cube() {
 		this.setLayout(null);
@@ -162,6 +162,7 @@ public class Cube extends JPanel {
 	}
 	
 	private void createCenterPanel() {
+
 		
 		textPane = new JTextPane();
 		scrollPane = new JScrollPane(textPane);
@@ -174,6 +175,7 @@ public class Cube extends JPanel {
 		centerPanel.add(scrollPane);
 		centerPanel.setBounds(200,50,1200,700);
 		this.add(centerPanel);
+
 	}
 
 	
@@ -226,7 +228,7 @@ public class Cube extends JPanel {
 
 		@Override
 		public void mouseExited(MouseEvent e) {
-			System.out.println("fuck is wrong with these?");
+			
 			for(int a = 0;a<8;a++) {
 				if(a < 4) {
 					if(topPanel1Labels[a] == e.getSource()) {

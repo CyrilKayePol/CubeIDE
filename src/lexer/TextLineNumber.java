@@ -61,7 +61,11 @@ public class TextLineNumber extends JPanel
 	{
 		this(component, 3);
 		component.setDocument(doc);
+<<<<<<< HEAD
 		component.setFont(new Font(Font.SERIF, 5, 15));
+=======
+		component.setFont(new Font(Font.SANS_SERIF, 5, 15));
+>>>>>>> c094d07eba8ca028a8a6b3b3d25dddf6c291fa0f
 	}
 
 	/**
@@ -75,7 +79,11 @@ public class TextLineNumber extends JPanel
 	{
 		this.component = component;
 		component.setDocument(doc);
+<<<<<<< HEAD
 		component.setFont(new Font(Font.SERIF, 3, 15));
+=======
+		component.setFont(new Font(Font.SANS_SERIF, 3, 15));
+>>>>>>> c094d07eba8ca028a8a6b3b3d25dddf6c291fa0f
 		setFont( component.getFont() );
 
 		setBorderGap( 5 );
