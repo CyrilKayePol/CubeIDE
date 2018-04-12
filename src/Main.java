@@ -1,3 +1,4 @@
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 public class Main {
@@ -9,5 +10,9 @@ public class Main {
 		frame.setSize(1350, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
+		
+		
+		ImageIcon icon = new ImageIcon("src/images/icon.png");
+		frame.setIconImage(icon.getImage());
 	}
 }
