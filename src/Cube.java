@@ -1,7 +1,6 @@
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -11,7 +10,7 @@ import java.io.File;
 import java.util.List;
 
 import javax.swing.*;
-<<<<<<< HEAD
+
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
