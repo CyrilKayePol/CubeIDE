@@ -4,30 +4,42 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 
-import javax.swing.*;
-
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextPane;
+import javax.swing.JTree;
+import javax.swing.JWindow;
+import javax.swing.SwingWorker;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import lexer.TextLineNumber;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.ButtonGroup;
-import javax.swing.JMenuBar;
-import javax.swing.KeyStroke;
+import lexer.TextLineNumber;
 
 public class Cube extends JPanel {
 
@@ -192,8 +204,9 @@ public class Cube extends JPanel {
 		scrollPane = new JScrollPane(textPane);
 		tln = new TextLineNumber(textPane);
 		scrollPane.setRowHeaderView( tln );
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		
-		scrollPane.setBounds(0,0,1300,700);
+		scrollPane.setBounds(0,0,1050,635);
 		centerPanel.setLayout(null);
 		centerPanel.setPreferredSize(new Dimension(200, 700));
 		centerPanel.add(scrollPane);
@@ -342,6 +355,32 @@ public class Cube extends JPanel {
 	                            }
 	                        }
 	                    }                    
+	                }else if(file.isFile() && (file.getName().endsWith(".java") || file.getName().endsWith(".cube"))) {
+	                	// TODO render file in  JTextPane
+	                	StyledDocument doc = textPane.getStyledDocument();
+	                	textPane.setText("");
+	                	String line = null;
+	                	
+	                	try {
+	                		
+	                		FileReader fr = new FileReader(file.getPath());
+                			BufferedReader br = new BufferedReader(fr);
+                			
+	                		while((line = br.readLine()) != null) {
+	                			//System.out.println(line);
+	                			
+	                			try {	                				
+									doc.insertString(doc.getLength(), line + "\n", null);
+								} catch (BadLocationException e) {
+									e.printStackTrace();
+								}
+	                		}
+	                		
+	                		br.close();
+	                	}catch(IOException e) {
+	                		e.printStackTrace();
+	                	}
+	                	
 	                }
 	                return null;
 	            }
