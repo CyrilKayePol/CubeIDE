@@ -1,0 +1,4 @@
+fn main( var a, var b)
+	if a < b
+	end
+end

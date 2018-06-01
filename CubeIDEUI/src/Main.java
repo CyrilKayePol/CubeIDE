@@ -1,6 +1,8 @@
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
+import cubecompiler.Cube;
+
 public class Main {
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();

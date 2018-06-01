@@ -1,3 +1,4 @@
+package cubecompiler;
 import java.awt.Component;
 import java.io.File;
 
@@ -9,7 +10,12 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 class FileTreeCellRenderer extends DefaultTreeCellRenderer {
 
-    private FileSystemView fileSystemView;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private FileSystemView fileSystemView;
 
     private JLabel label;
 

@@ -1,29 +1,32 @@
+package cubecompiler;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
@@ -39,12 +42,16 @@ import javax.swing.text.StyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import cubepiler.lexer.Lexer;
+import cubepiler.lexer.SourceException;
+import cubepiler.lexer.Token;
+import cubepiler.syntaxchecker.SyntaxChecker;
 import lexer.TextLineNumber;
 
-public class Cube extends JPanel {
+public class Cube extends JPanel implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
-	private JPanel sidePanel, topPanel1, topPanel2;
+	private JPanel sidePanel;
 	private JLabel topPanel1Labels[] = new JLabel[4];
 	private JLabel topPanel2Labels[] = new JLabel[4];
 	private ImageIcon topPanel2Icons[] = new ImageIcon[4];
@@ -58,15 +65,22 @@ public class Cube extends JPanel {
 	private Handler handler;
 
 	private JTextPane textPane;
-	private JScrollPane scrollPane;
+	private JScrollPane scrollPane, belowScrollPane;
 	private TextLineNumber tln;
-
+	private JButton run;
+	
 	private FileSystemView fileSystemView;
 	private DefaultTreeModel treeModel;
 	private JTree tree;
 	private JWindow win;
 	private JPanel centerPanel;
 	
+	private JMenuBar menuBar;
+	private JMenu menuFile, menuDevelopers, menuHelp;
+	private JMenuItem menuItem;
+	private JLabel console;
+	
+	public static JTextPane consolePane;
 	public Cube() {
 		this.setLayout(null);
 		this.setBackground(Color.GRAY);			
@@ -79,52 +93,51 @@ public class Cube extends JPanel {
 
 	public JMenuBar createMenuBar(){
 		//Where the GUI is created:
-		JMenuBar menuBar;
-		JMenu menu, submenu;
-		JMenuItem menuItem;
-		JRadioButtonMenuItem rbMenuItem;
-		JCheckBoxMenuItem cbMenuItem;
-
+		
 		//Create the menu bar.
 		menuBar = new JMenuBar();
 
 		//Build the first menu.
-		menu = new JMenu("File");
-		menu.setMnemonic(KeyEvent.VK_A);
-		menu.getAccessibleContext().setAccessibleDescription(
+		menuFile = new JMenu("File");
+		
+		menuFile.setMnemonic(KeyEvent.VK_A);
+		menuFile.getAccessibleContext().setAccessibleDescription(
 		        "The only menu in this program that has menu items");
-		menuBar.add(menu);
+		menuBar.add(menuFile);
 
 		//a group of JMenuItems
 		menuItem = new JMenuItem("New file", icons[0]);
 		//menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));		
-		menu.add(menuItem);
+		menuFile.add(menuItem);
 
 		menuItem = new JMenuItem("Open file", icons[1]);
 		//menuItem.setMnemonic(KeyEvent.VK_B);
-		menu.add(menuItem);		
+		menuFile.add(menuItem);		
 
 		menuItem = new JMenuItem("Save", icons[2]);
 		//menuItem.setMnemonic(KeyEvent.VK_B);
-		menu.add(menuItem);		
+		menuFile.add(menuItem);		
 
 		menuItem = new JMenuItem("Save as...", icons[2]);
 		//menuItem.setMnemonic(KeyEvent.VK_B);
-		menu.add(menuItem);										
+		menuFile.add(menuItem);	
+		
+		for(int i = 0; i< 4; i++) {
+			menuFile.getItem(i).addActionListener(this);
+		}
+		
+		menuFile.addActionListener(this);
+		menuDevelopers = new JMenu("Developers");		
+		menuBar.add(menuDevelopers);
 
-		menu = new JMenu("Developers");		
-		menuBar.add(menu);
-
-		menu = new JMenu("Help");		
-		menuBar.add(menu);
+		menuHelp = new JMenu("Help");		
+		menuBar.add(menuHelp);
 
 		return menuBar;
 	}
 	
 	private void init() {
 		sidePanel = new JPanel();
-		topPanel1 = new JPanel();
-		topPanel2 = new JPanel();
 		centerPanel = new JPanel();
 		handler = new Handler();
 		
@@ -186,8 +199,6 @@ public class Cube extends JPanel {
         JScrollPane treeScroll = new JScrollPane(tree);
         
         tree.setVisibleRowCount(15);
-        
-        Dimension preferredSize = treeScroll.getPreferredSize();
         Dimension widePreferred = new Dimension(
             210,
             650);
@@ -205,12 +216,32 @@ public class Cube extends JPanel {
 		tln = new TextLineNumber(textPane);
 		scrollPane.setRowHeaderView( tln );
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setBounds(0,0,1100,435);
 		
-		scrollPane.setBounds(0,0,1050,635);
+		run = new JButton("RUN");
+		run.setBounds(50, 440, 100, 30);
+		run.addActionListener(this);
+		
+		console = new JLabel("CONSOLE", JLabel.CENTER);
+		console.setBackground(new Color(211, 211, 211));
+		console.setOpaque(true);
+		console.setBounds(495, 440, 100, 40);
+		
+		consolePane = new JTextPane();
+		consolePane.setBackground(new Color(211, 211, 211));
+		belowScrollPane = new JScrollPane(consolePane);
+		belowScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		belowScrollPane.setBounds(50, 475, 1050, 185);
+		
 		centerPanel.setLayout(null);
 		centerPanel.setPreferredSize(new Dimension(200, 700));
 		centerPanel.add(scrollPane);
+		centerPanel.add(belowScrollPane);
+		centerPanel.add(run);
+		centerPanel.add(console);
+		
 		centerPanel.setBounds(225,0,1200,700);
+		
 		this.add(centerPanel);
 
 	}
@@ -219,24 +250,24 @@ public class Cube extends JPanel {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if(topPanel1Labels[0] == e.getSource()) {
+			Object obj = e.getSource();
+			if(topPanel1Labels[0] == obj) {
 				topPanel1Labels[0].setForeground(Color.GREEN);
 				createFileWindow();
-			}else if(topPanel2Labels[0] == e.getSource()) {
+			}else if(topPanel2Labels[0] == obj) {
 				openFiles("user.home");
-			}else if(filePanels[1] == e.getSource()) {
+			}else if(filePanels[1] == obj) {
 				win.dispose();
 				topPanel1Labels[0].setForeground(Color.BLACK);
 				openFiles("user.home");
-			}else if(filePanels[2] == e.getSource()) {
+			}else if(filePanels[2] == obj) {
 				win.dispose();
 				topPanel1Labels[0].setForeground(Color.BLACK);
 				openFiles("user.dir");
-			}else if(filePanels[7] == e.getSource()) {
+			}else if(filePanels[7] == obj) {
 				topPanel1Labels[0].setForeground(Color.BLACK);
 				win.dispose();
 			}
-			
 		}
 
 		@Override
@@ -399,4 +430,68 @@ public class Cube extends JPanel {
 	        };
 	        worker.execute();
 	  }
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		Object obj = arg0.getSource();
+		
+		if(obj == menuFile.getItem(3)|| obj == menuFile.getItem(2)) {
+			saveFile(textPane.getText());
+		}
+		else if(obj == menuFile.getItem(1)) {
+			openFile();
+		}
+		else if(obj == run) {
+			 Lexer lexer = new Lexer();
+			 consolePane.setText("");
+			 @SuppressWarnings("unused")
+			String output = "Tokens\n";
+		        try {
+		            int itemNumber = 0;
+		            for (Token token : lexer.getTokens( textPane.getText())) {
+		                output+=(String.format("%d) %s\t%s\tl:%d c:%d\n", itemNumber, token.getValue(), token.getType(), token.getStartingRow(), token.getStartingColumn()));
+		                itemNumber++;
+		            }
+		           output += ("Source String "+textPane.getText());
+		            SyntaxChecker sc = new SyntaxChecker(lexer.getTokens(textPane.getText()));
+		          
+		            try {
+		            	 sc.start();
+		            }
+		            catch(IndexOutOfBoundsException e) {
+		            	System.out.println("Index Out of bounds");
+		            }
+		           
+		        } catch (SourceException se) {
+		            System.out.println(se.getMessage());
+		        }
+		        
+		        //consolePane.setText(output);
+		}
+	}
+	public void saveFile(String toSave) {
+	    JFileChooser chooser = new JFileChooser();
+	    int retrival = chooser.showSaveDialog(null);
+	    if (retrival == JFileChooser.APPROVE_OPTION) {
+	        try {
+	            FileWriter fw = new FileWriter(chooser.getSelectedFile()+".cube");
+	            fw.write(toSave);
+	            fw.close();
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
+	    }
+	}
+	public void openFile() {
+		 JFileChooser chooser = new JFileChooser();
+		 int result = chooser.showOpenDialog(this);
+         if (result==JFileChooser.APPROVE_OPTION) {
+             File file = chooser.getSelectedFile();
+             try {
+                textPane.setPage(file.toURI().toURL());
+             } catch(Exception e) {
+                 e.printStackTrace();
+             }
+         }
+     }
 }

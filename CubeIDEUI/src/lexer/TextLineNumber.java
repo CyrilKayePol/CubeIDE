@@ -7,7 +7,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
-import cubecompiler.Lexer;
+import cubepiler.lexer.Lexer;
 
 /**
  *  This class will display line numbers for a related text component. The text
@@ -21,6 +21,10 @@ import cubecompiler.Lexer;
 public class TextLineNumber extends JPanel
 	implements CaretListener, DocumentListener, PropertyChangeListener
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public final static float LEFT = 0.0f;
 	public final static float CENTER = 0.5f;
 	public final static float RIGHT = 1.0f;
@@ -483,7 +487,12 @@ public class TextLineNumber extends JPanel
     final AttributeSet attrBlue = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.BLUE);
     final AttributeSet attrBlack = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.BLACK);
     DefaultStyledDocument doc = new DefaultStyledDocument() {
-        public void insertString (int offset, String str, AttributeSet a) throws BadLocationException {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public void insertString (int offset, String str, AttributeSet a) throws BadLocationException {
             super.insertString(offset, str, a);
 
             String text = getText(0, getLength());

@@ -1,10 +1,13 @@
 package lexer;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
 public class Editor extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public Editor(){
 		JTextPane textPane = new JTextPane();
 		JScrollPane scrollPane = new JScrollPane(textPane);
@@ -19,8 +22,5 @@ public class Editor extends JFrame{
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
-	}
-	public static void main(String[] args){
-		new Editor();
 	}
 }
