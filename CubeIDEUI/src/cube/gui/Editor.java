@@ -1,4 +1,4 @@
-package lexer;
+package cube.gui;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;

@@ -1,4 +1,4 @@
-package lexer;
+package cube.gui;
 import java.awt.*;
 import java.beans.*;
 import java.util.HashMap;
@@ -7,7 +7,8 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
-import cubepiler.lexer.Lexer;
+
+import cube.syntax.Lexer;
 
 /**
  *  This class will display line numbers for a related text component. The text

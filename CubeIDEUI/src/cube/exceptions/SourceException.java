@@ -1,7 +1,7 @@
 
-package cubepiler.lexer;
+package cube.exceptions;
 
-import cubecompiler.Cube;
+import cube.gui.Cube;
 
 public class SourceException extends Exception
 {

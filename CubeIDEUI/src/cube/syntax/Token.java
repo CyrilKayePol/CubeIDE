@@ -1,4 +1,4 @@
-package cubepiler.lexer;
+package cube.syntax;
 
 public class Token
 {

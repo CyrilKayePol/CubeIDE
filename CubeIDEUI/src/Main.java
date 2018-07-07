@@ -1,7 +1,7 @@
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
-import cubecompiler.Cube;
+import cube.gui.Cube;
 
 public class Main {
 	public static void main(String[] args) {

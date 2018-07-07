@@ -1,11 +1,9 @@
-package cubepiler.syntaxchecker;
+package cube.syntax;
 
 import java.util.LinkedList;
 
-import cubepiler.lexer.Lexer;
-import cubepiler.lexer.SourceException;
-import cubepiler.lexer.Token;
-import cubepiler.lexer.Token.TokenType;
+import cube.exceptions.SourceException;
+import cube.syntax.Token.TokenType;;
 
 public class Parser {
 	private Lexer lexer;

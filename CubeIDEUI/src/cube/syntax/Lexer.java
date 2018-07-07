@@ -1,6 +1,8 @@
-package cubepiler.lexer;
+package cube.syntax;
 
 import java.util.LinkedList;
+
+import cube.exceptions.SourceException;
 
 public class Lexer {
     private String source;

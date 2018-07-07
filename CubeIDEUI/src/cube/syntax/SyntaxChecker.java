@@ -1,10 +1,9 @@
-package cubepiler.syntaxchecker;
+package cube.syntax;
 
 import java.util.LinkedList;
 
-import cubecompiler.Cube;
-import cubepiler.lexer.SourceException;
-import cubepiler.lexer.Token;
+import cube.exceptions.SourceException;
+import cube.gui.Cube;
 
 public class SyntaxChecker {
 	private LinkedList<Token> tokens;

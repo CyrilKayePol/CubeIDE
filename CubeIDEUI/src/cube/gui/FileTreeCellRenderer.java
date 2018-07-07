@@ -1,4 +1,4 @@
-package cubecompiler;
+package cube.gui;
 import java.awt.Component;
 import java.io.File;
 

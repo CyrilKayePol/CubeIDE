@@ -1,4 +1,4 @@
-package cubecompiler;
+package cube.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -42,11 +42,10 @@ import javax.swing.text.StyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-import cubepiler.lexer.Lexer;
-import cubepiler.lexer.SourceException;
-import cubepiler.lexer.Token;
-import cubepiler.syntaxchecker.SyntaxChecker;
-import lexer.TextLineNumber;
+import cube.exceptions.SourceException;
+import cube.syntax.Lexer;
+import cube.syntax.SyntaxChecker;
+import cube.syntax.Token;
 
 public class Cube extends JPanel implements ActionListener{
 
@@ -459,7 +458,7 @@ public class Cube extends JPanel implements ActionListener{
 		            	 sc.start();
 		            }
 		            catch(IndexOutOfBoundsException e) {
-		            	System.out.println("Index Out of bounds");
+		            	//System.out.println("Index Out of bounds");
 		            }
 		           
 		        } catch (SourceException se) {
