@@ -11,14 +11,9 @@ import cube.semantics.blocks.IfBlock;
 
 public class MethodHelper {
 	
-	/**
-	 * 
-	 * @param toMatch
-	 * @return boolean value specifying whether the String toMatch matches the regex expression
-	 */
-	
-	private static String functionName;
+	private static String functionName, functionCall;
 	private static HashMap<Integer, String> line_hash;
+	private static String[] params, arguments;
 	
 	public static void setLineHash(HashMap<Integer, String> hash) {
 		line_hash = hash;
@@ -28,6 +23,7 @@ public class MethodHelper {
 		toMatch = toMatch.replace(" ", "");
 		String regex="([a-zA-Z0-9]+)\\((([a-zA-Z0-9]+)((,)([a-zA-Z0-9])+)*?)*?\\)";
 		
+		functionCall = toMatch;
 		Pattern funcPattern = Pattern.compile(regex);
 		Matcher m = funcPattern.matcher(toMatch);
 		 
@@ -46,6 +42,12 @@ public class MethodHelper {
 	}
 	
 	public static int getFunctionStartLine() {
+		
+		String args = functionCall.replace(functionName + "(", "");
+		args = args.replace(")", "");
+		
+		params = args.split(",");
+		
 		for(int i = 1; i < line_hash.size(); i++) {
 			if(line_hash.get(i).startsWith("fn")) {
 				String line = line_hash.get(i);
@@ -67,7 +69,7 @@ public class MethodHelper {
 	
 	public static int getFunctionEndLine(int start) {
 		ArrayList<Block> unmatched = new ArrayList<Block>();
-		for(int i = start; i < line_hash.size(); i++) {
+		for(int i = start; i <= line_hash.size(); i++) {
 			String line = line_hash.get(i);
 			
 			if(line != null) {
@@ -87,5 +89,36 @@ public class MethodHelper {
 			
 		}
 		return -1;
+	}
+	
+	public static boolean checkValidNumOfArguments() {
+		String method_dec = line_hash.get(getFunctionStartLine());
+		method_dec = method_dec.replaceAll("fn", "").replace(" ", "");
+		method_dec = method_dec.replaceAll(functionName + "\\(", "");
+		method_dec = method_dec.replaceAll("\\)", "").trim();
+		
+		String[] args = method_dec.split(",");
+		
+		if(args != null && params !=null && args.length == params.length) {
+			arguments = args;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public static String[] getParams() {
+		return params;
+	}
+	
+	public static String[] getArguments() {
+		for(int i = 0; i < arguments.length; i++) {
+			if(arguments[i].startsWith("var")) {
+				arguments[i] = arguments[i].replaceAll("var", "").trim();
+			}
+		}
+		
+		return arguments;
 	}
 }

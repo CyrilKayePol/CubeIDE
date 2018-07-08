@@ -260,6 +260,8 @@ public class Lexer {
             return Token.TokenType.C_PARENTHESIS;
         else if (word.equals(","))
             return Token.TokenType.SEPARATOR;
+        else if (word.equals("print"))
+            return Token.TokenType.PRINT;
         else
             return Token.TokenType.USER_DEFINED_NAME;
     }

@@ -452,6 +452,7 @@ public class Cube extends JPanel implements ActionListener{
 		                itemNumber++;
 		            }
 		           output += ("Source String "+textPane.getText());
+		           
 		            SyntaxChecker sc = new SyntaxChecker(lexer.getTokens(textPane.getText()));
 		          
 		            try {

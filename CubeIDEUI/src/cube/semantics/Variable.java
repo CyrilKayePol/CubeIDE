@@ -40,6 +40,10 @@ public class Variable {
 		value =v;
 	}
 	
+	public void setName(String name) {
+		variable_name = name;
+	}
+	
 	public String getName() {
 		return variable_name;
 	}

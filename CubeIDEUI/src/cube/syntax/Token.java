@@ -53,7 +53,8 @@ public class Token
         C_PARENTHESIS,
         SEPARATOR,
         NEW_LINE,
-        EOF
+        EOF, 
+        PRINT
     }
 
     private String value;

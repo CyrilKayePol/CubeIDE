@@ -3,10 +3,10 @@ package cube.semantics.blocks;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cube.exceptions.RunTimeException;
 import cube.semantics.Type;
 import cube.semantics.Variable;
 import cube.semantics.helpers.MethodHelper;
-import cube.semantics.helpers.Print;
 import cube.semantics.helpers.SeenVariableOperations;
 
 public class MainBlock extends Block{
@@ -28,6 +28,8 @@ public class MainBlock extends Block{
 		
 		initMainBlockLines(main_line, end_main);
 		initSeenVariables(1, end_main_line);
+		
+		output_value = "";
 	}
 	
 	public ArrayList<Variable> getSeenVariables(){
@@ -73,10 +75,10 @@ public class MainBlock extends Block{
 	}
 	
 	
-	protected void defineBlocks() {
+	protected void defineBlocks(int start, int end) {
 		MethodHelper.setLineHash(line_hash);
 		ArrayList<Block> unmatched = new ArrayList<Block>();
-		for(int i = start_main + 1; i < end_main; i++) {
+		for(int i = start + 1; i < end; i++) {
 			if (line_hash.get(i).startsWith("if")) {
 				IfBlock if_block = new IfBlock(null, -1, i);
 				
@@ -130,15 +132,36 @@ public class MainBlock extends Block{
 				while_block.setVariables(seen_variables);
 			}
 			else if(MethodHelper.functionCallMatcher(line_hash.get(i))){
-				int start = MethodHelper.getFunctionStartLine();
-				MethodBlock method_block = new MethodBlock(line_hash, start, MethodHelper.getFunctionEndLine(start));
+				int start_method = MethodHelper.getFunctionStartLine();
 				
-				if(unmatched.size() > 0) {
-					method_block.setMotherBlock(unmatched.get(unmatched.size() -1));
-					unmatched.get(unmatched.size() -1).getSubBlocks().add(method_block);
+				if(MethodHelper.checkValidNumOfArguments()) {
+					MethodBlock method_block = new MethodBlock(line_hash, start_method, MethodHelper.getFunctionEndLine(start_method));
+					
+					if(unmatched.size() > 0) {
+						method_block.setMotherBlock(unmatched.get(unmatched.size() -1));
+						unmatched.get(unmatched.size() -1).getSubBlocks().add(method_block);
+						
+						String[] args = MethodHelper.getArguments();
+						String[] params = MethodHelper.getParams();
+						method_block.addToSeenVariables(SeenVariableOperations.getArgsInSeenVariables(args, params));
+						SeenVariableOperations.setSeenVariables(seen_variables);
+						
+						method_block.whatToDo();
+					}
+					else {
+						sub_blocks.add(method_block);
+					}
 				}
 				else {
-					sub_blocks.add(method_block);
+					RunTimeException.showException("Function is undefined. Number of arguments does not match. ");
+				}
+			}
+			else if(line_hash.get(i).startsWith("print")) {
+				SeenVariableOperations.setSeenVariables(seen_variables);
+				String line = line_hash.get(i).replace("print", "").trim();
+				Variable v = SeenVariableOperations.findInSeenVariables(line);
+				if(v!=null) {
+					MainBlock.output_value += v.getValue();
 				}
 			}
 			
@@ -164,12 +187,12 @@ public class MainBlock extends Block{
 						inner.getStartline() > outer.getStartline()) {
 					inner.setMotherBlock(outer);
 				}
+				
 					
 			}
 		}
 	}
 	protected void defineSubBlocks() {
-		System.out.println(" ==== Sub-blocks ====");
 		for(int i = 0; i < sub_blocks.size(); i++) {
 			Block b = sub_blocks.get(i);
 			
@@ -182,7 +205,6 @@ public class MainBlock extends Block{
 					}
 				}
 			}
-			Print.printBlockInformation(b);
 		}
 	}
 	
@@ -232,15 +254,12 @@ public class MainBlock extends Block{
 	
 	@Override
 	public void whatToDo() {
-		defineBlocks();
+		defineBlocks(start_main, end_main);
 		defineMotherBlocks();
 		SeenVariableOperations.checkAssignments(line_hash, start_main, end_main);
 		
-		Print.printMainBlock(sub_blocks);
 		defineSubBlocks();
 		findElsifsEnd();
-		Print.printElsifs(sub_blocks);
 		removeNotMainSubBlock();
-		Print.printMainBlock(sub_blocks);
 	}
 }

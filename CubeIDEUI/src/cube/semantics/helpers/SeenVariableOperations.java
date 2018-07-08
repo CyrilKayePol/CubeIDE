@@ -69,30 +69,58 @@ public class SeenVariableOperations {
 	public static void checkAssignments(HashMap<Integer, String> line_hash, int start_main, int end_main) {
 		for(int i = start_main; i < end_main; i++) {
 			String str = line_hash.get(i);
-			
-			if(str.startsWith("if") || str.startsWith("while") || str.startsWith("elsif") ||
-					str.startsWith("var")) {}
-			else if(str.contains("==")) {}
-			else {
-				if(str.contains("=")) {
-					String name = str.substring(0, str.indexOf("="));
-					
-					for(int j = 0; j < seen_variables.size(); j++) {
-						Variable v = seen_variables.get(j);
+			if(str!= null) {
+				if(str.startsWith("if") || str.startsWith("while") || str.startsWith("elsif") ||
+						str.startsWith("var")) {}
+				else if(str.contains("==")) {}
+				else {
+					if(str.contains("=")) {
+						String name = str.substring(0, str.indexOf("="));
 						
-						if(v.getName().trim().equals(name.trim())) {
-							SeenVariableOperations.checkRightSide(str.substring(str.indexOf("=") + 1, str.length()), v, i);
-							break;
-						}
-						else {
-							if(j == seen_variables.size() - 1) {
-								RunTimeException.showException("Variable not found at line "+ i);
+						for(int j = 0; j < seen_variables.size(); j++) {
+							Variable v = seen_variables.get(j);
+							
+							if(v.getName().trim().equals(name.trim())) {
+								SeenVariableOperations.checkRightSide(str.substring(str.indexOf("=") + 1, str.length()), v, i);
+								break;
 							}
-								
+							else {
+								if(j == seen_variables.size() - 1) {
+									RunTimeException.showException("Variable not found at line "+ i);
+								}
+									
+							}
 						}
 					}
 				}
 			}
 		}
+	}
+	
+	public static Variable[] getArgsInSeenVariables(String[] args, String[] params) {
+		Variable[] var = new Variable[args.length];
+		int index = 0;
+		for(int i = 0; i < params.length; i++) {
+			String vv = params[i];
+			
+			Variable v = findInSeenVariables(vv);
+			
+			if(v!=null) {
+				Variable vvv = new Variable(args[i], v.getValue());
+				var[index] = vvv;
+				++index;
+			}
+		}
+		
+		return var;
+	}
+	
+	public static Variable findInSeenVariables(String name) {
+		for(Variable vv : seen_variables) {
+			if(vv.getName().equals(name)) {
+				return vv;
+			}
+		}
+		return null;
 	}
 }

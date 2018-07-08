@@ -7,10 +7,10 @@ import cube.semantics.Variable;
 public abstract class Block {
 	protected ArrayList<Block> sub_blocks;
 	
-	private ArrayList<Variable> variables;
-	private int type;
-	private Block mother_block;
-	private int endline, startline;
+	protected ArrayList<Variable> variables;
+	protected int type;
+	protected Block mother_block;
+	protected int endline, startline;
 	
 	public Block(int type, Block block, int end, int start) {
 		this.type = type;

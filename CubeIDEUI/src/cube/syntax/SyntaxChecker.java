@@ -54,7 +54,12 @@ public class SyntaxChecker {
 		if (currentToken.getType() == Token.TokenType.VAR) {
 			scan();
 			variableDeclarations();
-		} else if (currentToken.getType() == Token.TokenType.FN && !isCodeBlock) {
+		}else if (currentToken.getType() == Token.TokenType.PRINT) {
+			System.out.println("I came at print");
+			scan();
+			variableDeclarations();
+		}
+		else if (currentToken.getType() == Token.TokenType.FN && !isCodeBlock) {
 			fwfCount+=1;
 			scan();
 			functionDeclarations();
@@ -245,6 +250,10 @@ public class SyntaxChecker {
 		}
 		else if(currentToken.getType() == Token.TokenType.ELSIF) {
 			condition();
+		}
+		else if(currentToken.getType() == Token.TokenType.PRINT) {
+			scan();
+			variableDeclarations();
 		}
 		else if(currentToken.getType() == Token.TokenType.ELSE) {
 			scan();
