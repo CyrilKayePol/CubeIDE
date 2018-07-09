@@ -257,7 +257,7 @@ public class MainBlock extends Block{
 		defineBlocks(start_main, end_main);
 		defineMotherBlocks();
 		SeenVariableOperations.checkAssignments(line_hash, start_main, end_main);
-		
+		SeenVariableOperations.evaluateEvalType();
 		defineSubBlocks();
 		findElsifsEnd();
 		removeNotMainSubBlock();

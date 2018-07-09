@@ -6,7 +6,6 @@ import java.util.HashMap;
 import cube.exceptions.RunTimeException;
 import cube.semantics.blocks.MainBlock;
 import cube.semantics.helpers.Print;
-import cube.semantics.math_operations.EvaluateType;
 
 public class SemanticsChecker{
 	
@@ -24,9 +23,8 @@ public class SemanticsChecker{
 		main_block = new MainBlock(line_hash, Type.MAIN, main_line_num, end_main_line_num);
 		
 		main_block.whatToDo();
+		Print.printMainBlockVariables(main_block);
 		System.out.println("Output value: "+ MainBlock.output_value);
-		EvaluateType.evaluate(null, "(10+191+1234/45+\"hello\") * (1 + 90+6)");
-		EvaluateType.checkIfValidArithmeticOperands();
 	}
 	
 	private void findMain() {

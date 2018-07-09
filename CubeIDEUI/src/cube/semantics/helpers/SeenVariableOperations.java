@@ -6,6 +6,7 @@ import java.util.HashMap;
 import cube.exceptions.RunTimeException;
 import cube.semantics.Type;
 import cube.semantics.Variable;
+import cube.semantics.math_operations.EvaluateType;
 
 public class SeenVariableOperations {
 	
@@ -65,6 +66,19 @@ public class SeenVariableOperations {
 			}
 		}
 	}	
+	
+	public static void evaluateEvalType() {
+		for(Variable vv : seen_variables) {
+			if(vv.getType().equals(Type.EVAL)) {
+				EvaluateType.evaluate(vv, vv.getValue().toString());
+				
+				if(EvaluateType.checkIfValidArithmeticOperands()) {
+					vv.setValue(EvaluateType.eval());
+				}
+				System.out.println("name = "+ vv.getName() + " value = "+ vv.getValue());
+			}
+		}
+	}
 	
 	public static void checkAssignments(HashMap<Integer, String> line_hash, int start_main, int end_main) {
 		for(int i = start_main; i < end_main; i++) {
