@@ -1,12 +1,13 @@
 package cube.semantics.blocks;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import cube.semantics.Variable;
 
 public abstract class Block {
+	protected HashMap<Integer, String> lines_under_me;
 	protected ArrayList<Block> sub_blocks;
-	
 	protected ArrayList<Variable> variables;
 	protected int type;
 	protected Block mother_block;
@@ -18,6 +19,7 @@ public abstract class Block {
 		endline = end;
 		startline = start;
 		sub_blocks = new ArrayList<Block>();
+		lines_under_me = new HashMap<Integer, String>();
 	}
 	
 	public int getType() {
@@ -58,6 +60,10 @@ public abstract class Block {
 	
 	public ArrayList<Block> getSubBlocks(){
 		return sub_blocks;
+	}
+	
+	public HashMap<Integer, String> getLinesUnderMe(){
+		return lines_under_me;
 	}
 	public abstract void whatToDo();
 }

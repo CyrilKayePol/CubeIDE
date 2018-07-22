@@ -78,7 +78,9 @@ public class MainBlock extends Block{
 	protected void defineBlocks(int start, int end) {
 		MethodHelper.setLineHash(line_hash);
 		ArrayList<Block> unmatched = new ArrayList<Block>();
+		Block above = null;
 		for(int i = start + 1; i < end; i++) {
+			
 			if (line_hash.get(i).startsWith("if")) {
 				IfBlock if_block = new IfBlock(null, -1, i);
 				
@@ -89,6 +91,8 @@ public class MainBlock extends Block{
 				sub_blocks.add(if_block);
 				unmatched.add(if_block);
 				if_block.setVariables(seen_variables);
+				
+				above = if_block;
 			}
 			else if (line_hash.get(i).startsWith("elsif")) {
 				ElsifBlock elsif_block = new ElsifBlock(null, -1, i);
@@ -97,11 +101,13 @@ public class MainBlock extends Block{
 				String con = elsif_line.substring(elsif_line.indexOf("(") + 1, elsif_line.indexOf(")"));
 				
 				elsif_block.setCondition(con);
+				above = elsif_block;
 				for(int j = unmatched.size() -1; j >= 0; j--) {
 					if(unmatched.get(j).getType() == Type.IF) {
 						((IfBlock)unmatched.get(j)).getElsifs().add(elsif_block);
 						elsif_block.setMotherBlock((IfBlock)unmatched.get(j));
 						elsif_block.setIfOwner((IfBlock)unmatched.get(j));
+						((IfBlock) unmatched.get(j)).getElsifs().add(elsif_block);
 						break;
 					}
 				}
@@ -111,11 +117,16 @@ public class MainBlock extends Block{
 			else if(line_hash.get(i).startsWith("else")) {
 				ElseBlock else_block = new ElseBlock(null, -1, i);
 				
+				above = else_block;
 				for(int j = unmatched.size() -1; j >= 0; j--) {
 					if(unmatched.get(j).getType() == Type.IF) {
 						((IfBlock)unmatched.get(j)).setElse(else_block);
 						else_block.setMotherBlock((IfBlock)unmatched.get(j));
 						else_block.setIfOwner((IfBlock)unmatched.get(j));
+						
+						if(((IfBlock)unmatched.get(j)).getElse() == null) {
+							((IfBlock)unmatched.get(j)).setElse(else_block);
+						}
 						break;
 					}
 				}
@@ -130,6 +141,8 @@ public class MainBlock extends Block{
 				sub_blocks.add(while_block);
 				unmatched.add(while_block);
 				while_block.setVariables(seen_variables);
+				
+				above = while_block;
 			}
 			else if(MethodHelper.functionCallMatcher(line_hash.get(i))){
 				int start_method = MethodHelper.getFunctionStartLine();
@@ -156,15 +169,19 @@ public class MainBlock extends Block{
 					RunTimeException.showException("Function is undefined. Number of arguments does not match. ");
 				}
 			}
-			else if(line_hash.get(i).startsWith("print")) {
+			else {
+				above.getLinesUnderMe().put(i, line_hash.get(i));
+			}
+			/*else if(line_hash.get(i).startsWith("print")) {
 				SeenVariableOperations.setSeenVariables(seen_variables);
 				String line = line_hash.get(i).replace("print", "").trim();
 				Variable v = SeenVariableOperations.findInSeenVariables(line);
 				if(v!=null) {
 					MainBlock.output_value += v.getValue();
 				}
+				above.getLinesUnderMe().put(i, line_hash.get(i));
 			}
-			
+			*/
 			int size = unmatched.size();
 			if(line_hash.get(i).startsWith("end")) {
 				if(unmatched.size()> 0) {
@@ -256,6 +273,7 @@ public class MainBlock extends Block{
 	public void whatToDo() {
 		defineBlocks(start_main, end_main);
 		defineMotherBlocks();
+		SeenVariableOperations.setSeenVariables(seen_variables);
 		SeenVariableOperations.checkAssignments(line_hash, start_main, end_main);
 		SeenVariableOperations.evaluateEvalType();
 		defineSubBlocks();

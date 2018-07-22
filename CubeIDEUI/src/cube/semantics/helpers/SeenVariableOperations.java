@@ -7,11 +7,12 @@ import cube.exceptions.RunTimeException;
 import cube.semantics.Type;
 import cube.semantics.Variable;
 import cube.semantics.math_operations.EvaluateType;
+import cube.semantics.math_operations.ExpressionParser;
 
 public class SeenVariableOperations {
 	
 	private static ArrayList<Variable> seen_variables;
-	
+	private static ArrayList<String> arguments;
 	public static void setSeenVariables(ArrayList<Variable> variables) {
 		seen_variables = variables;
 	}
@@ -56,7 +57,7 @@ public class SeenVariableOperations {
 			if(!hasEntered) {
 				if(right.contains("+")|| right.contains("-") || right.contains("\\") ||
 						right.contains("|") || right.contains("&&") ||right.contains("*") || 
-						(right.contains("(" )&& right.contains(")"))){
+						right.contains("!")||(right.contains("(" )&& right.contains(")"))){
 							v.setValue(right);
 							v.setType(Type.EVAL);
 						}
@@ -73,13 +74,42 @@ public class SeenVariableOperations {
 				EvaluateType.evaluate(vv, vv.getValue().toString());
 				
 				if(EvaluateType.checkIfValidArithmeticOperands()) {
+					vv.setType(Type.FLOAT);
 					vv.setValue(EvaluateType.eval());
 				}
-				System.out.println("name = "+ vv.getName() + " value = "+ vv.getValue());
+				else {
+					if(ExpressionParser.isValid) {
+						vv.setType(Type.BOOLEAN);
+						String[] args = new String[arguments.size()];
+						String arg = putBraces(vv.getValue().toString());
+						vv.setValue(ExpressionParser.evaluate(arg, arguments.toArray(args)));
+					}
+					else {
+						RunTimeException.showException(" Specified value is invalid ");
+					}
+					ExpressionParser.isValid = true;
+				}
 			}
 		}
 	}
 	
+	public static String putBraces(String stmt) {
+		
+		arguments = new ArrayList<String>();
+		StringBuilder m = new StringBuilder(stmt);
+		for(Variable vv: seen_variables) {
+			if(stmt.contains(vv.getName())) {
+				int offset = m.indexOf(vv.getName());
+				m = m.insert(offset, "[");
+				m = m.insert(offset+vv.getName().length(), "]");
+				arguments.add(vv.getName());
+				arguments.add(vv.getValue().toString());
+				System.out.println(m);
+			}
+		}
+		stmt = m.toString();
+		return stmt;
+	}
 	public static void checkAssignments(HashMap<Integer, String> line_hash, int start_main, int end_main) {
 		for(int i = start_main; i < end_main; i++) {
 			String str = line_hash.get(i);

@@ -1,5 +1,7 @@
 package cube.semantics.math_operations;
 
+import java.util.ArrayList;
+
 import cube.exceptions.RunTimeException;
 import cube.semantics.Variable;
 import cube.semantics.helpers.SeenVariableOperations;
@@ -48,7 +50,7 @@ public class EvaluateType {
 				if(v == null) {
 					RunTimeException.showException("Invalid Expression. One of the operands is undefined. " + operands[i]);
 					isValid = false;
-					//break;
+					break;
 				}
 				else {
 					if(v.getValue().getClass() == Integer.class || v.getValue().getClass() == Float.class) {
@@ -128,14 +130,20 @@ public class EvaluateType {
 	            } else {
 	                throw new RuntimeException("Unexpected: " + (char)ch);
 	            }
-
+	            variable.setValue(x);
 	            return x;
 	        }
 	    }.parse();
 	}
-	            
-	public static void main(String[] args) {
-		evaluate(null, "(10+191) * (1 + 90+6)");
-		checkIfValidArithmeticOperands();
+	
+	public static ArrayList<String> createStack(String expression){
+		ArrayList<String> stack  = new ArrayList<String>();
+		
+		
+		return stack;
+	}
+	
+	public static boolean evaluateLogicalOperation() {
+		return false;
 	}
 }
