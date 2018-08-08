@@ -1,60 +1,11 @@
-var a = 0, b, m
-var b = (10+191+true) * (1 + 90+6)
-
 fn main()
-if(a < b)
-	while(true)
-		if (a)
-			var e = 0
-			e = p
-		elsif (y >= a | 0 > 1)
-			while(a | b >= n & true)
-				var d = 0
-				var g = 1
-				b = a
-			end
-			if(m | a)
-				b = a+b
-			elsif (k)
-					b = a
-					b = 19+90
-					while(a)
-						b = a
-					end
-					while(a)
-						b = m| a
-					end
-					while(a)
-						while(a)
-						b = a
-						end
-						if(a)
-						b = a
-						elsif(a)
-						b = a
-						else
-						b = a
-						end
-					end
-				
-			elsif (k)
-				
-					b = a
-					b = a
-					b = a
-				
-			else
-			
-					b = c
-					b = a
-				
-			end
-			while(0 > i)
-			 a = 9
-			 end
-		end
-end
-end
+var a = 0, m
+var b = (10+191) * (1 + 90+6)
+	if(a > b)
+		a = b
+	elsif(a<b)
+		b = a
+	end
 end
 
 fn printString(var str)

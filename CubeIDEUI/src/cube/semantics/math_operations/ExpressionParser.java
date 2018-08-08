@@ -1,13 +1,16 @@
 package cube.semantics.math_operations;
 
+import java.util.Arrays;
+
 public class ExpressionParser {
 	private static final String[] operators = { "!=", "==", ">=", "<=", ">", "<", "||", "&&", "*", "/", "+", "-", "^" };
 	public static boolean isValid = true;
     private static boolean parseAndEvaluateExpression(String ex){
             for (char c : ex.toCharArray())
             {
-                    if (!Character.isSpaceChar(c))
-                            return parseWithStrings(ex);
+                    if (!Character.isSpaceChar(c)) {
+                    	return parseWithStrings(ex);
+                    }
             }
             System.err.println("ERROR: Expression cannot be empty!");
             isValid = false;
@@ -24,6 +27,7 @@ public class ExpressionParser {
     public static boolean evaluate(String or, String... vars){
             if ((vars.length % 2 == 1 || vars.length < 2) && vars.length != 0)
             {
+            		System.out.println("Fucking Vars: "+ Arrays.toString(vars));
                     System.err.println("ERROR: Invalid arguments!");
                     isValid = false;
                     return false;
@@ -178,7 +182,7 @@ public class ExpressionParser {
                     return false;
             }
     }
-    private static double parseMathematicalExpression(String s){
+    private static double parseMathematicalExpression(String s) throws NumberFormatException{
             int[] op = determineOperatorPrecedenceAndLocation(s);
             int start = op[0];
             String left = s.substring(0, start).trim();
@@ -189,6 +193,7 @@ public class ExpressionParser {
                     left = "" + parseMathematicalExpression(left);
             if (containsMathematicalOperator(right))
                     right = "" + parseMathematicalExpression(right);
+            
             return evaluateSingleMathematicalExpression(Double.parseDouble(removeParens(left)), oper,
                             Double.parseDouble(removeParens(right)));
     }
@@ -226,6 +231,7 @@ public class ExpressionParser {
             }
     }
     public static void main(String[] args) {
-    	ExpressionParser.evaluate("2+[x] == [y] && (1==1 && Joe==Joe && 3^2>10)", "x", 5, "y", 7);
+    	Object[] params = {"a", 5.0, "b", 7};
+    	System.out.println(ExpressionParser.evaluate("[a]<[b]", params));
     }
 }

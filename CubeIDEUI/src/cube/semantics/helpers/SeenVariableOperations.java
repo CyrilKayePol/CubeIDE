@@ -70,26 +70,29 @@ public class SeenVariableOperations {
 	
 	public static void evaluateEvalType() {
 		for(Variable vv : seen_variables) {
-			if(vv.getType().equals(Type.EVAL)) {
-				EvaluateType.evaluate(vv, vv.getValue().toString());
-				
-				if(EvaluateType.checkIfValidArithmeticOperands()) {
-					vv.setType(Type.FLOAT);
-					vv.setValue(EvaluateType.eval());
-				}
-				else {
-					if(ExpressionParser.isValid) {
-						vv.setType(Type.BOOLEAN);
-						String[] args = new String[arguments.size()];
-						String arg = putBraces(vv.getValue().toString());
-						vv.setValue(ExpressionParser.evaluate(arg, arguments.toArray(args)));
+			if(vv.getType() != null) {
+				if(vv.getType().equals(Type.EVAL)) {
+					EvaluateType.evaluate(vv, vv.getValue().toString());
+					
+					if(EvaluateType.checkIfValidArithmeticOperands()) {
+						vv.setType(Type.FLOAT);
+						vv.setValue(EvaluateType.eval());
 					}
 					else {
-						RunTimeException.showException(" Specified value is invalid ");
+						if(ExpressionParser.isValid) {
+							vv.setType(Type.BOOLEAN);
+							String[] args = new String[arguments.size()];
+							String arg = putBraces(vv.getValue().toString());
+							vv.setValue(ExpressionParser.evaluate(arg, arguments.toArray(args)));
+						}
+						else {
+							RunTimeException.showException(" Specified value is invalid ");
+						}
+						ExpressionParser.isValid = true;
 					}
-					ExpressionParser.isValid = true;
 				}
 			}
+			
 		}
 	}
 	

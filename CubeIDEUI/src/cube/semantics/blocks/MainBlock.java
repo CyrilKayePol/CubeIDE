@@ -91,7 +91,6 @@ public class MainBlock extends Block{
 				sub_blocks.add(if_block);
 				unmatched.add(if_block);
 				if_block.setVariables(seen_variables);
-				
 				above = if_block;
 			}
 			else if (line_hash.get(i).startsWith("elsif")) {
@@ -170,7 +169,13 @@ public class MainBlock extends Block{
 				}
 			}
 			else {
-				above.getLinesUnderMe().put(i, line_hash.get(i));
+				
+				/**
+				 * TO-DO
+				 */
+				if(line_hash.get(i).startsWith("var")) {}
+				else
+					above.getLinesUnderMe().put(i, line_hash.get(i));
 			}
 			/*else if(line_hash.get(i).startsWith("print")) {
 				SeenVariableOperations.setSeenVariables(seen_variables);
