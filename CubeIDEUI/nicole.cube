@@ -1,4 +1,13 @@
-fn main( var a, var b)
-	if (a < b)
+fn main()
+	var a = p+p	
+	if(a)
+		l = 0
+	elseif(a)
+		var g = i+o-2
+		if(5<3 & a)
+		end
+	else
+		main()
+		print("if you")
 	end
 end
