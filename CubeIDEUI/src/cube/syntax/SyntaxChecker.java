@@ -14,6 +14,7 @@ public class SyntaxChecker {
 	private boolean isMultipleAssignment = false;
 	
 	public SyntaxChecker(LinkedList<Token> tokens) {
+		
 		this.tokens = tokens;
 		this.tokens.add(new Token("EOF", Token.TokenType.EOF, 0, 0));
 		this.currentTokenIndex = 0;
@@ -32,6 +33,8 @@ public class SyntaxChecker {
 				scan();
 			}
 			
+		}else if(currentToken.getType() == Token.TokenType.END) {
+			endCount+=1;
 		}
 		System.out.println(currentToken.getValue() + ":" + currentToken.getStartingRow() + ":" + currentToken.getStartingColumn());
 	}
@@ -51,13 +54,16 @@ public class SyntaxChecker {
 	}
 	
 	private void declarations() throws SourceException {
+		System.out.println("king of my heart");
 		if (currentToken.getType() == Token.TokenType.VAR) {
 			scan();
 			variableDeclarations();
+			scan();
+			declarations();
 		}else if (currentToken.getType() == Token.TokenType.PRINT) {
 			System.out.println("I came at print");
 			scan();
-			variableDeclarations();
+			printFunction();
 		}
 		else if (currentToken.getType() == Token.TokenType.FN && !isCodeBlock) {
 			fwfCount+=1;
@@ -69,7 +75,7 @@ public class SyntaxChecker {
 		} else if (currentToken.getType() == Token.TokenType.USER_DEFINED_NAME && isCodeBlock) {
 			codeBlock();
 		} else if (currentToken.getType() == Token.TokenType.END) {
-			endCount+=1;
+			System.out.println("E "+endCount);
 			isCodeBlock = false;
 			scan();
 			declarations();
@@ -80,6 +86,7 @@ public class SyntaxChecker {
 			codeBlock();
 		}
 		else if (currentToken.getType() == Token.TokenType.IF && !isCodeBlock) {
+			System.out.println("cuppsss");
 			fwfCount+=1;
 			condition();
 			codeBlock();
@@ -92,6 +99,7 @@ public class SyntaxChecker {
 			codeBlock();
 		}
 		else {
+			System.out.println(isCodeBlock);
 			throw new SourceException("Illegal line of code!", currentToken.getStartingRow(), currentToken.getStartingColumn());
 		}
 	}
@@ -100,6 +108,7 @@ public class SyntaxChecker {
 		if (currentToken.getType() == Token.TokenType.USER_DEFINED_NAME) {
 			scan();
 			variableStatements();
+			System.out.println("done in variable statements");
 		} 
 		else {
 			throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
@@ -112,14 +121,21 @@ public class SyntaxChecker {
 			variableDeclarations();
 		} else if (currentToken.getType() == Token.TokenType.NEW_LINE) {
 			scan();
-			declarations();
+			System.out.println("--------");
+			statements();
+			System.out.println("*******");
+			
 		} else if (isOperator(currentToken.getType())) {
 			scan();
 			
-			if (currentToken.getType() == Token.TokenType.USER_DEFINED_NAME)
-				variableDeclarations();
+			if (currentToken.getType() == Token.TokenType.USER_DEFINED_NAME) {
+				scan();
+				variableStatements();
+			}else {
+				variableValues();
+			}
 			
-			variableValues();
+			
 		} else {
 			System.out.println("I came "+ currentToken.getType());
 			throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
@@ -133,7 +149,7 @@ public class SyntaxChecker {
 			variableDeclarations();
 		} else if (currentToken.getType() == Token.TokenType.NEW_LINE ) {
 			scan();
-			declarations();
+			statements();
 		}
 		else if (currentToken.getType() == Token.TokenType.O_PARENTHESIS ) {
 			scan();
@@ -151,7 +167,9 @@ public class SyntaxChecker {
 		}
 		else if (isOperator(currentToken.getType())) {
 			scan();
+			System.out.println("first");
 			scan();
+			System.out.println("second");
 			variableValues();
 		} else {
 			throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
@@ -203,26 +221,29 @@ public class SyntaxChecker {
 	private void codeBlock() throws SourceException {
 		// new line is the current token
 		isCodeBlock = true;
-		
+		System.out.println("set isCodeblock to true");
 		while (currentToken.getType() != Token.TokenType.END) {
 			scan();
-      
+			System.out.println("called statements");
 			statements();
-			
+			System.out.println("outside statements");
 		}
-		endCount+= 1;
+		
+		System.out.println("E "+endCount);
 		scan();
 		isCodeBlock = false;
+		System.out.println("set isCodeblock to false");
 		declarations();
 	}
 	
   private void statements() throws SourceException{
+	  System.out.println("inside statements :"+currentToken.getType());
       if (currentToken.getType() == Token.TokenType.VAR) {
 				scan();
 				variableDeclarations();
 				
 				System.out.println("after variable declarations");
-			} else if (currentToken.getType() == Token.TokenType.USER_DEFINED_NAME) {
+	  } else if (currentToken.getType() == Token.TokenType.USER_DEFINED_NAME) {
 				scan();
 				if (currentToken.getType() == Token.TokenType.ASSIGNMENT) {
 					isMultipleAssignment = true;
@@ -232,30 +253,33 @@ public class SyntaxChecker {
 					scan();
 					functionCall(Token.TokenType.O_PARENTHESIS);
 				}
-				 else if (currentToken.getType() == Token.TokenType.C_PARENTHESIS) {
+				else if (currentToken.getType() == Token.TokenType.C_PARENTHESIS) {
 						
-					}
+				}
 				else {
 					throw new SourceException("Illegal statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
 				}
-			} else if (currentToken.getType() == Token.TokenType.NEW_LINE) {
-				
-			}
-      else if(currentToken.getType() == Token.TokenType.IF) {
+	 } else if (currentToken.getType() == Token.TokenType.NEW_LINE) {
+				System.out.println("new line end of line");
+		
+	 } else if(currentToken.getType() == Token.TokenType.IF) {
+    	 
 			fwfCount+=1;
 			condition();
-		}else if(currentToken.getType() == Token.TokenType.WHILE) {
+			System.out.println("done with conditions()");
+	 }else if(currentToken.getType() == Token.TokenType.WHILE) {
 			fwfCount+=1;
 			condition();
-		}
-		else if(currentToken.getType() == Token.TokenType.ELSIF) {
+		
+	 }	else if(currentToken.getType() == Token.TokenType.ELSIF) {
 			condition();
-		}
-		else if(currentToken.getType() == Token.TokenType.PRINT) {
+		
+	 }else if (currentToken.getType() == Token.TokenType.PRINT) {
+			
 			scan();
-			variableDeclarations();
-		}
-		else if(currentToken.getType() == Token.TokenType.ELSE) {
+			printFunction();
+	
+	 }	else if(currentToken.getType() == Token.TokenType.ELSE) {
 			scan();
 			if(currentToken.getType() == Token.TokenType.NEW_LINE) {
 				statements();
@@ -263,7 +287,7 @@ public class SyntaxChecker {
 			else {
 				throw new SourceException("Unmatched else ", currentToken.getStartingRow(), currentToken.getStartingColumn());
 			}
-		}
+	 }
   }
 
 	private void variableOperation(Token.TokenType prev, int parentheses) throws SourceException {
@@ -392,12 +416,15 @@ public class SyntaxChecker {
 				
 				logical();
 			}
-			else
+			else {
 				logical();
+				System.out.println(currentToken.getType());
+			}
 		}
 	}
 	private void logical() throws SourceException{
 		Token.TokenType type = currentToken.getType();
+		
 		if(type==  Token.TokenType.AND || type==  Token.TokenType.OR||
 				type==  Token.TokenType.NOT ) {
 				scan();
@@ -438,5 +465,38 @@ public class SyntaxChecker {
   
 	private boolean isOperator(Token.TokenType type) {
 		return (type == Token.TokenType.ADDITION || type == Token.TokenType.SUBTRACTION || type == Token.TokenType.MULTIPLICATION || type == Token.TokenType.DIVISION || type == Token.TokenType.EXPONENT || type == Token.TokenType.MODULO || type == Token.TokenType.AND || type == Token.TokenType.OR || type == Token.TokenType.ASSIGNMENT);
+	}
+	
+	private void printFunction() throws SourceException {
+		Token.TokenType type = currentToken.getType();
+		
+		if(type == Token.TokenType.O_PARENTHESIS) {
+			scan();
+			if(currentToken.getType() == Token.TokenType.STRING) {
+				scan();
+				if(currentToken.getType() == Token.TokenType.C_PARENTHESIS) {
+					scan();
+					if (currentToken.getType() == Token.TokenType.NEW_LINE) {
+							scan();
+							statements();
+					}
+				}else {
+					throw new SourceException("Missing Parenthesis", currentToken.getStartingRow(), currentToken.getStartingColumn());
+				}
+			}else if(currentToken.getType() == Token.TokenType.USER_DEFINED_NAME) {
+				scan();
+				if(currentToken.getType() == Token.TokenType.C_PARENTHESIS) {
+					scan();
+					if (currentToken.getType() == Token.TokenType.NEW_LINE) {
+						scan();
+						statements();
+					}
+				}else {
+					throw new SourceException("Missing Parenthesis", currentToken.getStartingRow(), currentToken.getStartingColumn());
+				}
+			}
+		}else {
+			throw new SourceException("Missing Parenthesis", currentToken.getStartingRow(), currentToken.getStartingColumn());
+		}
 	}
 }
