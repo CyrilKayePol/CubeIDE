@@ -2,18 +2,19 @@ fn main()
 var a = 0, m = 0
 var b = (10+191) * (1 + 90+6)
 	while(m < 2)
-		print m
+		print "Yoohoo " + m
 		m = m + 1
 	end
-	print m
+	print "Yow" + m
 	stringPrint("HII", 2)
 	print b
 	
-	if(b > 100)
+	if(b < 100)
 		a = 200 * 2 + 3
 		print a
-	elsif(b < 100)
-		print b
+	elsif(b > 100)
+		b = 200
+		print "Its a b: "+b
 	else
 		print m
 	end
@@ -22,6 +23,8 @@ end
 fn stringPrint(var str, var s)
 	if(str == s)
 		str = "Hello"
+	else
+		str = "Yaya"
 	end
-	print str
+	print "Str is: "+str
 end

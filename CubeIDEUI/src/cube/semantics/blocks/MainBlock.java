@@ -16,7 +16,7 @@ public class MainBlock extends Block{
 	protected ArrayList<Variable> seen_variables;
 	
 	protected HashMap<Integer, String> main_block_lines;
-	protected HashMap<Integer, String> line_hash;
+	public static HashMap<Integer, String> line_hash;
 	
 	protected int end_main, start_main;
 	public static String output_value;
@@ -24,7 +24,7 @@ public class MainBlock extends Block{
 	public MainBlock(HashMap<Integer, String> line_hash, int type, int main_line, int end_main_line) {
 		
 		super(type, null, main_line, end_main_line);
-		this.line_hash = line_hash;
+		MainBlock.line_hash = line_hash;
 		
 		end_main = end_main_line;
 		start_main = main_line;
@@ -314,9 +314,20 @@ public class MainBlock extends Block{
 				else {
 					if(b.toString().startsWith("print")) {
 						String line = b.toString().replace("print", "").trim();
-						Variable v = SeenVariableOperations.findInSeenVariables(line);
-						if(v!=null) {
-							MainBlock.output_value += v.getValue() + "\n";
+						String[] to_be_printed = line.split("\\+");
+						
+						for(int k = 0; k < to_be_printed.length; k ++) {
+							Variable v = SeenVariableOperations.findInSeenVariables(to_be_printed[k].trim());
+							
+							if(v!=null) {
+								MainBlock.output_value += v.getValue().toString().replace("\"", "");
+							}
+							else {
+								MainBlock.output_value +=  to_be_printed[k].replace("\"", "");
+							}
+							
+							if(k == to_be_printed.length - 1)
+								MainBlock.output_value +=   "\n";
 						}
 					}
 				}

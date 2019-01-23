@@ -22,6 +22,7 @@ public class ElseBlock extends Block{
 	}
 	@Override
 	public void whatToDo() {
+		SeenVariableOperations.checkAssignments(MainBlock.line_hash, startline, endline);
 			for(int i = startline;i < endline;i++) {
 				Object b = lines_under_me.get(i);
 				
@@ -62,9 +63,19 @@ public class ElseBlock extends Block{
 					else {
 						if(b.toString().startsWith("print")) {
 							String line = b.toString().replace("print", "").trim();
-							Variable v = SeenVariableOperations.findInSeenVariables(line);
-							if(v!=null) {
-								MainBlock.output_value += v.getValue()+ "\n";
+							String[] to_be_printed = line.split("\\+");
+							
+							for(int k = 0; k < to_be_printed.length; k ++) {
+								Variable v = SeenVariableOperations.findInSeenVariables(to_be_printed[k].trim());
+								if(v!=null) {
+									MainBlock.output_value += v.getValue().toString().replace("\"", "");
+								}
+								else {
+									MainBlock.output_value +=  to_be_printed[k].replace("\"", "");
+								}
+								
+								if(k == to_be_printed.length - 1)
+									MainBlock.output_value +=   "\n";
 							}
 						}
 					}
@@ -83,5 +94,4 @@ public class ElseBlock extends Block{
 				}
 			}
 		}
-
 }
