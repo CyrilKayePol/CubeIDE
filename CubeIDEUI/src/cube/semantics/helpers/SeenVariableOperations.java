@@ -16,6 +16,10 @@ public class SeenVariableOperations {
 	public static void setSeenVariables(ArrayList<Variable> variables) {
 		seen_variables = variables;
 	}
+	
+	public static ArrayList<Variable> getSeenVariables(){
+		return seen_variables;
+	}
 	public static void removeVariableIfExists(String name) {
 		for(int i = 0; i < seen_variables.size(); i++) {
 			Variable var = seen_variables.get(i);
@@ -133,7 +137,7 @@ public class SeenVariableOperations {
 							}
 							else {
 								if(j == seen_variables.size() - 1) {
-									RunTimeException.showException("Variable not found at line "+ i);
+									RunTimeException.showException(" @SeenVariableOperations Variable not found at line "+ i);
 								}
 									
 							}
@@ -152,11 +156,15 @@ public class SeenVariableOperations {
 			
 			Variable v = findInSeenVariables(vv);
 			
+			Variable vvv = null;
 			if(v!=null) {
-				Variable vvv = new Variable(args[i], v.getValue());
-				var[index] = vvv;
-				++index;
+				vvv = new Variable(args[i], v.getValue());
 			}
+			else {
+				vvv = new Variable(args[i], params[i]);
+			}
+			var[index] = vvv;
+			++index;
 		}
 		
 		return var;

@@ -53,7 +53,8 @@ public class EvaluateType {
 					break;
 				}
 				else {
-					if(v.getValue().getClass() == Integer.class || v.getValue().getClass() == Float.class) {
+					if(v.getValue().getClass() == Integer.class || v.getValue().getClass() == Float.class || 
+							v.getValue().getClass() == String.class || v.getValue().getClass() == Double.class) {
 						isValid = true;
 						to_evaluate = to_evaluate.replace(operands[i], v.getValue().toString());
 					}

@@ -20,9 +20,10 @@ public class MethodHelper {
 	}
 	
 	public static boolean functionCallMatcher(String toMatch) {
-		toMatch = toMatch.replace(" ", "");
-		String regex="([a-zA-Z0-9]+)\\((([a-zA-Z0-9]+)((,)([a-zA-Z0-9])+)*?)*?\\)";
 		
+		toMatch = toMatch.replace(" ", "");
+		String regex="([a-zA-Z0-9]+)\\(((([a-zA-Z0-9]+)||(\"[a-zA-Z0-9]+\"))((,)(([a-zA-Z0-9]+)||(\\\"[a-zA-Z0-9]+\\\")))*?)*?\\)";
+	
 		functionCall = toMatch;
 		Pattern funcPattern = Pattern.compile(regex);
 		Matcher m = funcPattern.matcher(toMatch);
@@ -32,6 +33,7 @@ public class MethodHelper {
 		          if(index == 1)
 		        	  functionName = m.group(index);
 		     }
+		     System.out.println("\t[INFO] @MethodHelper a function call matched" );
 		     return true;
 		}
 		return false;
@@ -53,7 +55,6 @@ public class MethodHelper {
 				String line = line_hash.get(i);
 				
 				line = line.replace("fn", "").trim();
-				
 				if(line.startsWith(functionName)) {
 					return i;
 				}

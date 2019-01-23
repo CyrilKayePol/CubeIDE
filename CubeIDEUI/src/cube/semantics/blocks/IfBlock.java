@@ -1,11 +1,12 @@
 package cube.semantics.blocks;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import cube.semantics.Type;
 import cube.semantics.Variable;
+import cube.semantics.helpers.Assignment;
 import cube.semantics.helpers.SeenVariableOperations;
+import cube.semantics.math_operations.EvaluateType;
 import cube.semantics.math_operations.ExpressionParser;
 
 public class IfBlock extends Block{
@@ -53,10 +54,80 @@ public class IfBlock extends Block{
 	@Override
 	public void whatToDo() {
 		if(toEvaluate) {
-			
+			for(int i = startline;i < endline;i++) {
+				Object b = lines_under_me.get(i);
+				
+				if(b!=null) {
+					
+					if(Assignment.checkIfAssignment(b.toString())) {
+						int begin = b.toString().indexOf("=");
+						
+						String right = b.toString().substring(0, begin);
+						String left = b.toString().substring(begin+1).trim();
+						
+						Variable v = SeenVariableOperations.findInSeenVariables(right.trim());
+						if(v!=null) {
+							Variable v1 = SeenVariableOperations.findInSeenVariables(left);
+							if(v1!=null) {
+								v.setValue(v1.getValue());
+							}
+							else {
+								String type = Variable.identifyTypes(left);
+								
+								if(type.equals(Type.EVAL)) {
+									EvaluateType.evaluate(v, left);
+									if(EvaluateType.checkIfValidArithmeticOperands()) {
+										v.setType(Type.FLOAT);
+										v.setValue(EvaluateType.eval());
+									}
+									else {
+										/**
+										 * TO DO: check if value is logical: true or false
+										 */
+									}
+								}
+							}
+						}
+					}
+					else {
+						if(b.toString().startsWith("print")) {
+						
+							String line = b.toString().replace("print", "").trim();
+							Variable v = SeenVariableOperations.findInSeenVariables(line);
+							if(v!=null) {
+								MainBlock.output_value += v.getValue()+ "\n";
+							}
+						}
+					}
+				}
+				else {
+					for(int j = 0; j < sub_blocks.size(); j++) {
+						Block block = sub_blocks.get(j);
+						
+						if(block.getStartline() == i) {
+							block.whatToDo();
+							mother_block.setVariables(block.variables);
+							break;
+						}
+					}
+				}
+			}
 		}
 		else {
-			
+			boolean executeElse = true;
+			for(int j = 0; j < elsifs.size(); j++) {
+				ElsifBlock block = elsifs.get(j);
+				
+				if(block.getToEvaluate()) {
+					block.whatToDo();
+					executeElse = false;
+					break;
+				}	
+			}
+			if(executeElse && else_block != null) {
+				else_block.whatToDo();
+				this.setVariables(else_block.variables);
+			}
 		}
 	}
 	public void evaluateCondition() {
@@ -77,13 +148,11 @@ public class IfBlock extends Block{
 			}
 		}
 		try {
-			System.out.println("Input Parser: "+ inputParser + " params: " + Arrays.toString(params.toArray()));
 			toEvaluate = (ExpressionParser.evaluate(inputParser.toString(),params.toArray()));
-			System.out.println("To Evaluate: "+toEvaluate);
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
-			System.out.println("Condition is not valid");
+			System.err.println(":::::::::::::Condition is not valid");
 		}
 	}
 }

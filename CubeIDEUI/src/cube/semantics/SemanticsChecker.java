@@ -22,9 +22,13 @@ public class SemanticsChecker{
 		
 		main_block = new MainBlock(line_hash, Type.MAIN, main_line_num, end_main_line_num);
 		
+		main_block.initAll();
+		//Print.printMainBlockVariables(main_block);
+		
 		main_block.whatToDo();
-		Print.printMainBlockVariables(main_block);
-		System.out.println("Output value: "+ MainBlock.output_value);
+		System.out.println("***************************************\n");
+		System.out.println("OUTPUT VALUE\n"+ MainBlock.output_value);
+		System.out.println("***************************************");
 	}
 	
 	private void findMain() {
@@ -80,9 +84,7 @@ public class SemanticsChecker{
 		try {
 			if(block_count ==  end_count -1)
 				end_main_line_num = ends.get(end_count-1);
-			else {
-				System.out.println("==== Block Count: "+ block_count + " ====End count: "+ end_count);
-			}
+			else {}
 		}
 		catch(Exception e) {
 			RunTimeException.showException(e.getMessage());
@@ -92,6 +94,5 @@ public class SemanticsChecker{
 	
 	public static void main(String[] args) {
 		new SemanticsChecker();
-	}
-	
+	}	
 }

@@ -1,7 +1,5 @@
 package cube.semantics.math_operations;
 
-import java.util.Arrays;
-
 public class ExpressionParser {
 	private static final String[] operators = { "!=", "==", ">=", "<=", ">", "<", "||", "&&", "*", "/", "+", "-", "^" };
 	public static boolean isValid = true;
@@ -27,8 +25,7 @@ public class ExpressionParser {
     public static boolean evaluate(String or, String... vars){
             if ((vars.length % 2 == 1 || vars.length < 2) && vars.length != 0)
             {
-            		System.out.println("Fucking Vars: "+ Arrays.toString(vars));
-                    System.err.println("ERROR: Invalid arguments!");
+                    System.err.println(":::::::::: ERROR: Invalid arguments!");
                     isValid = false;
                     return false;
             }
@@ -43,7 +40,6 @@ public class ExpressionParser {
             String right = s.substring(op[1]).trim();
             String oper = s.substring(start, op[1]).trim();
             int logType = logicalOperatorType(oper);
-            System.out.println("PARSE: Left: \"" + left + "\" Right: \"" + right + "\" Operator: \"" + oper + "\"");
             if (logType == 0) // encounters OR- recurse
                     return parseWithStrings(left) || parseWithStrings(right);
             else if (logType == 1) // encounters AND- recurse
@@ -188,7 +184,6 @@ public class ExpressionParser {
             String left = s.substring(0, start).trim();
             String right = s.substring(op[1]).trim();
             String oper = s.substring(start, op[1]).trim();
-            System.out.println("MATH:  Left: \"" + left + "\" Right: \"" + right + "\" Operator: \"" + oper + "\"");
             if (containsMathematicalOperator(left))
                     left = "" + parseMathematicalExpression(left);
             if (containsMathematicalOperator(right))
@@ -229,9 +224,5 @@ public class ExpressionParser {
                     isValid = false;
                     return false;
             }
-    }
-    public static void main(String[] args) {
-    	Object[] params = {"a", 5.0, "b", 7};
-    	System.out.println(ExpressionParser.evaluate("[a]<[b]", params));
     }
 }

@@ -14,7 +14,7 @@ public class Variable {
 			isInitialized = true;
 			
 			String val = value.toString().trim();
-			identifyTypes(val);
+			variable_type = identifyTypes(val);
 		}
 	}
 	
@@ -68,22 +68,22 @@ public class Variable {
 		}
 	}
 	
-	public void identifyTypes(String val) {
-		if(val.equals("true") || value.toString().equals("false")) {
-			variable_type = Type.BOOLEAN;
+	public static String identifyTypes(String val) {
+		if(val.equals("true") || val.equals("false")) {
+			return Type.BOOLEAN;
 		}
 		else if(val.startsWith("\"") && val.endsWith("\"")){
-			variable_type =  Type.STRING;
+			return  Type.STRING;
 		}	
 		else {
 			if(isInt(val)) {
-				variable_type = Type.INTEGER;
+				return Type.INTEGER;
 			}
 			else {
 				if(isFloat(val))
-					variable_type = Type.FLOAT;
+					return Type.FLOAT;
 				else
-					variable_type =  Type.EVAL;
+					return  Type.EVAL;
 			}
 		}
 	}

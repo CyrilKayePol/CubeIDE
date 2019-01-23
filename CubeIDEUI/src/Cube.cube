@@ -1,15 +1,27 @@
 fn main()
-var a = 0, m
+var a = 0, m = 0
 var b = (10+191) * (1 + 90+6)
-	if(a > b)
-		a = b
-	elsif(a<b)
-		b = a
+	while(m < 2)
+		print m
+		m = m + 1
+	end
+	print m
+	stringPrint("HII", 2)
+	print b
+	
+	if(b > 100)
+		a = 200 * 2 + 3
+		print a
+	elsif(b < 100)
+		print b
+	else
+		print m
 	end
 end
 
-fn printString(var str)
-	if(str == b)
-		str = 2
+fn stringPrint(var str, var s)
+	if(str == s)
+		str = "Hello"
 	end
+	print str
 end
