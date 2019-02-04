@@ -172,7 +172,6 @@ public class MainBlock extends Block{
 				}
 			}
 			else {
-				
 				/**
 				 * TO-DO
 				 */
@@ -193,6 +192,8 @@ public class MainBlock extends Block{
 					
 					if(unmatched.size() == 0)
 						above = this;
+					else if(unmatched.size() > 0)
+						above = unmatched.get(unmatched.size()-1);
 				}
 			}
 		}
@@ -299,8 +300,8 @@ public class MainBlock extends Block{
 							if(type.equals(Type.EVAL)) {
 								EvaluateType.evaluate(v, left);
 								if(EvaluateType.checkIfValidArithmeticOperands()) {
-									v.setType(Type.FLOAT);
-									v.setValue(EvaluateType.eval());
+									if(v.getType() == Type.INTEGER) v.setValue( (int) EvaluateType.eval());
+									else v.setValue(EvaluateType.eval());
 								}
 								else {
 									/**

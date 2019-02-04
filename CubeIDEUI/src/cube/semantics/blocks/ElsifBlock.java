@@ -23,7 +23,6 @@ public class ElsifBlock extends Block{
 
 	public void setCondition(String con) {
 		condition = con;
-		evaluateCondition();
 	}
 	
 	public String getCondition() {
@@ -44,8 +43,8 @@ public class ElsifBlock extends Block{
 	}
 	@Override
 	public void whatToDo() {
-		SeenVariableOperations.checkAssignments(MainBlock.line_hash, startline, endline);
 		if(toEvaluate) {
+			
 			for(int i = startline;i < endline;i++) {
 				Object b = lines_under_me.get(i);
 				
@@ -70,8 +69,8 @@ public class ElsifBlock extends Block{
 								if(type.equals(Type.EVAL)) {
 									EvaluateType.evaluate(v, left);
 									if(EvaluateType.checkIfValidArithmeticOperands()) {
-										v.setType(Type.FLOAT);
-										v.setValue(EvaluateType.eval());
+										if(v.getType() == Type.INTEGER) v.setValue( (int) EvaluateType.eval());
+										else v.setValue(EvaluateType.eval());
 									}
 									else {
 										/**
@@ -104,7 +103,7 @@ public class ElsifBlock extends Block{
 					}
 				}
 				else {
-					for(int j = i; j < sub_blocks.size(); j++) {
+					for(int j = 0; j < sub_blocks.size(); j++) {
 						Block block = sub_blocks.get(j);
 						
 						if(block.getStartline() == i) {
@@ -119,6 +118,8 @@ public class ElsifBlock extends Block{
 		}
 	}
 	public void evaluateCondition() {
+		for(int m = 0; m < SeenVariableOperations.getSeenVariables().size(); m++)
+			System.out.println("xx: "+ SeenVariableOperations.getSeenVariables().get(m).getValue());
 		condition = condition.replaceAll("\\s","");
 		String[] operands = condition.split("!=|==|>=|<=|>|<|\\|\\||&&|\\*|/|\\+|-|^");
 		

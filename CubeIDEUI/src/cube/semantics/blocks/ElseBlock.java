@@ -22,8 +22,7 @@ public class ElseBlock extends Block{
 	}
 	@Override
 	public void whatToDo() {
-		SeenVariableOperations.checkAssignments(MainBlock.line_hash, startline, endline);
-			for(int i = startline;i < endline;i++) {
+		for(int i = startline;i < endline;i++) {
 				Object b = lines_under_me.get(i);
 				
 				if(b!=null) {
@@ -47,8 +46,8 @@ public class ElseBlock extends Block{
 								if(type.equals(Type.EVAL)) {
 									EvaluateType.evaluate(v, left);
 									if(EvaluateType.checkIfValidArithmeticOperands()) {
-										v.setType(Type.FLOAT);
-										v.setValue(EvaluateType.eval());
+										if(v.getType() == Type.INTEGER) v.setValue( (int) EvaluateType.eval());
+										else v.setValue(EvaluateType.eval());
 									}
 									else {
 										/**
@@ -62,7 +61,7 @@ public class ElseBlock extends Block{
 					}
 					else {
 						if(b.toString().startsWith("print")) {
-							String line = b.toString().replace("print", "").trim();
+							String line = b.toString().replace("print", "").replace("(", "").replace(")", "").trim();
 							String[] to_be_printed = line.split("\\+");
 							
 							for(int k = 0; k < to_be_printed.length; k ++) {
@@ -81,7 +80,7 @@ public class ElseBlock extends Block{
 					}
 				}
 				else {
-					for(int j = i; j < sub_blocks.size(); j++) {
+					for(int j = 0; j < sub_blocks.size(); j++) {
 						Block block = sub_blocks.get(j);
 						
 						if(block.getStartline() == i) {
