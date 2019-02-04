@@ -118,8 +118,6 @@ public class ElsifBlock extends Block{
 		}
 	}
 	public void evaluateCondition() {
-		for(int m = 0; m < SeenVariableOperations.getSeenVariables().size(); m++)
-			System.out.println("xx: "+ SeenVariableOperations.getSeenVariables().get(m).getValue());
 		condition = condition.replaceAll("\\s","");
 		String[] operands = condition.split("!=|==|>=|<=|>|<|\\|\\||&&|\\*|/|\\+|-|^");
 		

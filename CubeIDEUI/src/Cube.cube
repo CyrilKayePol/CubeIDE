@@ -13,6 +13,7 @@ fn main()
 		c = (100 * 9 + (21 * 2)) - 350/7
 		print "Equal" + c
 	end
+	
 end
 
 fn sayHelloThere(var iterations, var a)
@@ -26,5 +27,13 @@ fn sayHelloThere(var iterations, var a)
 			a = a-1
 		end
 		iterations = iterations -1
+	end
+end
+
+fn justSomething()
+	if(c < 1000)
+		print "C is less than 1000"
+	else
+		print "C is greater"
 	end
 end
