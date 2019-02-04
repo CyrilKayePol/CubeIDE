@@ -100,7 +100,7 @@ public class SyntaxChecker {
 		}
 		else {
 			System.out.println(isCodeBlock);
-			throw new SourceException("Illegal line of code!", currentToken.getStartingRow(), currentToken.getStartingColumn());
+			throw new SourceException("Illegal Statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
 		}
 	}
 	
@@ -389,6 +389,8 @@ public class SyntaxChecker {
 		}
 		else if(currentToken.getType() == Token.TokenType.NEW_LINE) {
 			throw new SourceException("Invalid Condition! ", currentToken.getStartingRow(), currentToken.getStartingColumn());
+		}else {
+			throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
 		}
 	}
 	private void conditionalStatements() throws SourceException{
@@ -479,9 +481,14 @@ public class SyntaxChecker {
 					if (currentToken.getType() == Token.TokenType.NEW_LINE) {
 							scan();
 							statements();
+					}else {
+						throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
 					}
+				}else if(currentToken.getType() == Token.TokenType.ADDITION){
+					scan();
+					concatPrint();
 				}else {
-					throw new SourceException("Missing Parenthesis", currentToken.getStartingRow(), currentToken.getStartingColumn());
+					throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
 				}
 			}else if(currentToken.getType() == Token.TokenType.USER_DEFINED_NAME) {
 				scan();
@@ -490,13 +497,55 @@ public class SyntaxChecker {
 					if (currentToken.getType() == Token.TokenType.NEW_LINE) {
 						scan();
 						statements();
+					}else {
+						throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
 					}
 				}else {
-					throw new SourceException("Missing Parenthesis", currentToken.getStartingRow(), currentToken.getStartingColumn());
+					throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
 				}
 			}
 		}else {
 			throw new SourceException("Missing Parenthesis", currentToken.getStartingRow(), currentToken.getStartingColumn());
+		}
+	}
+	
+	private void concatPrint() throws SourceException {
+		
+		if(currentToken.getType() == Token.TokenType.USER_DEFINED_NAME) {
+			scan();
+			if(currentToken.getType() == Token.TokenType.ADDITION) {
+				scan();
+				concatPrint();
+			}else if(currentToken.getType() == Token.TokenType.C_PARENTHESIS) {
+				scan();
+				if (currentToken.getType() == Token.TokenType.NEW_LINE) {
+					scan();
+					statements();
+				}else {
+					throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
+				}
+			}else {
+				throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
+			}
+		}else if(currentToken.getType() == Token.TokenType.STRING) {
+			scan();
+			if(currentToken.getType() == Token.TokenType.ADDITION) {
+				scan();
+				concatPrint();
+			}else if(currentToken.getType() == Token.TokenType.C_PARENTHESIS) {
+				scan();
+				if (currentToken.getType() == Token.TokenType.NEW_LINE) {
+					scan();
+					statements();
+				}else {
+					throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
+				}
+				
+			}else {
+				throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
+			}
+		}else {
+			throw new SourceException("Undefined token '+'", currentToken.getStartingRow(), currentToken.getStartingColumn());
 		}
 	}
 }
