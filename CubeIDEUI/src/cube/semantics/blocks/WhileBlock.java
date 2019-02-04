@@ -34,21 +34,16 @@ public class WhileBlock extends Block{
 	}
 	@Override
 	public void whatToDo() {
-		
 		while(toEvaluate) {
 			for(int i = startline;i < endline;i++) {
 				Object b = lines_under_me.get(i);
-				
 				if(b!=null) {
-					
 					if(Assignment.checkIfAssignment(b.toString())) {
 						int begin = b.toString().indexOf("=");
 						
 						String right = b.toString().substring(0, begin);
 						String left = b.toString().substring(begin+1).trim();
-						
 						Variable v = SeenVariableOperations.findInSeenVariables(right.trim());
-						
 						if(v!=null) {
 							Variable v1 = SeenVariableOperations.findInSeenVariables(left);
 							if(v1!=null) {
@@ -56,18 +51,25 @@ public class WhileBlock extends Block{
 							}
 							else {
 								String type = Variable.identifyTypes(left);
-								
 								if(type.equals(Type.EVAL)) {
 									EvaluateType.evaluate(v, left);
+									
 									if(EvaluateType.checkIfValidArithmeticOperands()) {
-										v.setType(Type.FLOAT);
-										v.setValue(EvaluateType.eval());
+										if(v.getType() == Type.INTEGER) v.setValue( (int) EvaluateType.eval());
+										else v.setValue(EvaluateType.eval());
 									}
 									else {
 										/**
 										 * TO DO: check if value is logical: true or false
 										 */
 									}
+								}
+								else {
+									v.setValue(left);
+									/*
+									for(int m = 0; m < SeenVariableOperations.getSeenVariables().size(); m++ ) {
+										System.out.println("H: "+ SeenVariableOperations.getSeenVariables().get(m).getValue());
+									}*/
 								}
 							}
 						}
@@ -94,13 +96,14 @@ public class WhileBlock extends Block{
 					}
 				}
 				else {
-					for(int j = i; j < sub_blocks.size(); j++) {
+					for(int j = 0; j < sub_blocks.size(); j++) {
 						Block block = sub_blocks.get(j);
 						
 						if(block.getStartline() == i) {
+							if(block.getType() == 3) ((IfBlock) block).evaluateCondition();
+							else if(block.getType() == 4) ((ElsifBlock) block).evaluateCondition();
+							else if (block.getType() == 6)((WhileBlock) block).evaluateCondition();
 							block.whatToDo();
-							
-							mother_block.setVariables(block.variables);
 							break;
 						}
 					}
@@ -110,6 +113,9 @@ public class WhileBlock extends Block{
 		}
 	}
 	public void evaluateCondition() {
+		/*for(int m = 0; m < SeenVariableOperations.getSeenVariables().size(); m++ ) {
+			System.out.println("what: "+ SeenVariableOperations.getSeenVariables().get(m).getValue());
+		}*/
 		conditions = conditions.replaceAll("\\s","");
 		String[] operands = conditions.split("!=|==|>=|<=|>|<|\\|\\||&&|\\*|/|\\+|-|^");
 		

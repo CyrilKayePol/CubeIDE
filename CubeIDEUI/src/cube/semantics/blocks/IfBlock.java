@@ -54,7 +54,7 @@ public class IfBlock extends Block{
 	@Override
 	public void whatToDo() {
 		if(toEvaluate) {
-			SeenVariableOperations.checkAssignments(MainBlock.line_hash, startline, endline);
+		
 			for(int i = startline;i < endline;i++) {
 				Object b = lines_under_me.get(i);
 				
@@ -78,8 +78,9 @@ public class IfBlock extends Block{
 								if(type.equals(Type.EVAL)) {
 									EvaluateType.evaluate(v, left);
 									if(EvaluateType.checkIfValidArithmeticOperands()) {
-										v.setType(Type.FLOAT);
-										v.setValue(EvaluateType.eval());
+										
+										if(v.getType() == Type.INTEGER) v.setValue( (int) EvaluateType.eval());
+										else v.setValue(EvaluateType.eval());
 									}
 									else {
 										/**
@@ -113,7 +114,6 @@ public class IfBlock extends Block{
 				else {
 					for(int j = 0; j < sub_blocks.size(); j++) {
 						Block block = sub_blocks.get(j);
-						
 						if(block.getStartline() == i) {
 							block.whatToDo();
 							mother_block.setVariables(block.variables);
@@ -127,7 +127,8 @@ public class IfBlock extends Block{
 			boolean executeElse = true;
 			for(int j = 0; j < elsifs.size(); j++) {
 				ElsifBlock block = elsifs.get(j);
-				
+				SeenVariableOperations.setSeenVariables(variables);
+				block.evaluateCondition();
 				if(block.getToEvaluate()) {
 					block.whatToDo();
 					executeElse = false;

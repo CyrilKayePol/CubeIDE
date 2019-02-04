@@ -59,7 +59,6 @@ public class EvaluateType {
 						to_evaluate = to_evaluate.replace(operands[i], v.getValue().toString());
 					}
 					else {
-						System.out.println("Operand: "+  operands[i]);
 						RunTimeException.showException("Invalid Expression. One of the operands value is not valid for arithmetic computation. " + operands[i]);
 						isValid = false;
 						break;
@@ -67,7 +66,6 @@ public class EvaluateType {
 				}
 			}
 		}
-		
 		return isValid;
 	}
 	

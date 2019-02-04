@@ -27,7 +27,6 @@ public class MethodBlock extends MainBlock{
 		super.findElsifsEnd();
 		
 		removeNotSubBlocks();
-		
 		for(int i = startline;i < endline; i++) {
 			Object b = lines_under_me.get(i);
 			
@@ -51,8 +50,8 @@ public class MethodBlock extends MainBlock{
 							if(type.equals(Type.EVAL)) {
 								EvaluateType.evaluate(v, left);
 								if(EvaluateType.checkIfValidArithmeticOperands()) {
-									v.setType(Type.FLOAT);
-									v.setValue(EvaluateType.eval());
+									if(v.getType() == Type.INTEGER) v.setValue( (int) EvaluateType.eval());
+									else v.setValue(EvaluateType.eval());
 								}
 								else {
 									/**
