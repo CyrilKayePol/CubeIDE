@@ -47,7 +47,6 @@ public class SyntaxChecker {
 	}
 	
 	public void terminate() {
-		Cube.consolePane.setText(Cube.consolePane.getText()+"Notice : Source code is syntactically valid!");
 		System.out.println("Notice : Source code is syntactically valid!");
 		new SemanticsChecker(code);
 	}
@@ -105,7 +104,7 @@ public class SyntaxChecker {
 		}
 		else {
 			System.out.println(isCodeBlock);
-			throw new SourceException("Illegal Statement! dasd", currentToken.getStartingRow(), currentToken.getStartingColumn());
+			throw new SourceException("Illegal Statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
 		}
 	}
 	

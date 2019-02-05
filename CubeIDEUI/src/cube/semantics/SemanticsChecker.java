@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cube.exceptions.RunTimeException;
+import cube.gui.Cube;
 import cube.semantics.blocks.MainBlock;
 import cube.semantics.helpers.Print;
 
@@ -46,6 +47,7 @@ public class SemanticsChecker{
 		System.out.println("***************************************\n");
 		System.out.println("OUTPUT VALUE\n"+ MainBlock.output_value);
 		System.out.println("***************************************");
+		Cube.consolePane.setText(Cube.consolePane.getText()+""+MainBlock.output_value);
 	}
 	
 	private void findMain() {
