@@ -58,8 +58,9 @@ public class SyntaxChecker {
 	}
 	
 	private void declarations() throws SourceException {
-		System.out.println("king of my heart");
+		System.out.println("inside declarations() : "+currentToken.getValue());
 		if (currentToken.getType() == Token.TokenType.VAR) {
+			System.out.println("found var");
 			scan();
 			variableDeclarations();
 			scan();
@@ -104,7 +105,7 @@ public class SyntaxChecker {
 		}
 		else {
 			System.out.println(isCodeBlock);
-			throw new SourceException("Illegal Statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
+			throw new SourceException("Illegal Statement! dasd", currentToken.getStartingRow(), currentToken.getStartingColumn());
 		}
 	}
 	
@@ -120,10 +121,12 @@ public class SyntaxChecker {
 	}
 	
 	private void variableStatements() throws SourceException {
+		System.out.println("inside variableStatements");
 		if (currentToken.getType() == Token.TokenType.SEPARATOR) {
 			scan();
 			variableDeclarations();
 		} else if (currentToken.getType() == Token.TokenType.NEW_LINE) {
+			
 			scan();
 			System.out.println("--------");
 			statements();
@@ -141,19 +144,26 @@ public class SyntaxChecker {
 			
 			
 		} else {
+			
 			System.out.println("I came "+ currentToken.getType());
 			throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
 		}
 	}
 	
 	private void variableValues() throws SourceException {
+		System.out.println("inside variablevalues");
 		scan();
 		if (currentToken.getType() == Token.TokenType.SEPARATOR) {
 			scan();
 			variableDeclarations();
 		} else if (currentToken.getType() == Token.TokenType.NEW_LINE ) {
 			scan();
-			statements();
+			
+			if(currentToken.getType() == Token.TokenType.FN) {
+				declarations();
+			}else {
+				statements();
+			}
 		}
 		else if (currentToken.getType() == Token.TokenType.O_PARENTHESIS ) {
 			scan();
