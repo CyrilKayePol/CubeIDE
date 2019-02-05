@@ -50,11 +50,11 @@ public class ElseBlock extends Block{
 										else v.setValue(EvaluateType.eval());
 									}
 									else {
-										/**
-										 * TO DO: check if value is logical: true or false
-										 */
+										v.setType(Type.BOOLEAN);
+										v.setValue(EvaluateType.evaluateLogicalOperation(left));
 									}
 								}
+								else v.setValue(left);
 							}
 						}
 						

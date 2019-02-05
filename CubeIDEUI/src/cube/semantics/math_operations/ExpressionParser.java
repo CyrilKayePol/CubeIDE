@@ -1,9 +1,10 @@
 package cube.semantics.math_operations;
 
 public class ExpressionParser {
-	private static final String[] operators = { "!=", "==", ">=", "<=", ">", "<", "||", "&&", "*", "/", "+", "-", "^" };
+	private static final String[] operators = { "!=", "==", ">=", "<=", ">", "<", "|", "&", "*", "/", "+", "-", "^" };
 	public static boolean isValid = true;
     private static boolean parseAndEvaluateExpression(String ex){
+    	
             for (char c : ex.toCharArray())
             {
                     if (!Character.isSpaceChar(c)) {
@@ -16,6 +17,7 @@ public class ExpressionParser {
     }
     @SafeVarargs
 	public static <T> boolean evaluate(String or, T... rep){
+    	
             String[] temp = new String[rep.length];
             for (int i = 0; i < rep.length; i++)
                     temp[i] = "" + rep[i];
@@ -31,6 +33,7 @@ public class ExpressionParser {
             }
             for (int i = 0; i < vars.length; i += 2)
                     or = or.replace("[" + vars[i] + "]", "" + vars[i + 1]);
+           
             return parseAndEvaluateExpression(or);
     }
     private static boolean parseWithStrings(String s) {
@@ -103,9 +106,9 @@ public class ExpressionParser {
     private static int logicalOperatorType(String op){
             switch (op.trim())
             {
-            case "||":
+            case "|":
                     return 0;
-            case "&&":
+            case "&":
                     return 1;
             default:
                     return -1;
@@ -173,7 +176,7 @@ public class ExpressionParser {
             case "!=":
                     return left != right;
             default:
-                    System.err.println("ERROR: Operator type not recognized.");
+                    System.err.println("ERROR: Operator type not recognized. " + op);
                     isValid = false;
                     return false;
             }
@@ -220,7 +223,7 @@ public class ExpressionParser {
             case "!=":
                     return !left.equals(right);
             default:
-                    System.err.println("ERROR: Operator type not recognized.");
+                    System.err.println("ERROR: Operator type not recognized. " + right);
                     isValid = false;
                     return false;
             }

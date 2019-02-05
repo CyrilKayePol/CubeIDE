@@ -30,7 +30,6 @@ public class MainBlock extends Block{
 		start_main = main_line;
 		
 		initMainBlockLines(main_line, end_main);
-		initSeenVariables(1, end_main_line);
 		
 		output_value = "";
 	}
@@ -152,11 +151,14 @@ public class MainBlock extends Block{
 				if(MethodHelper.checkValidNumOfArguments()) {
 					MethodBlock method_block = new MethodBlock(line_hash, start_method, MethodHelper.getFunctionEndLine(start_method));
 					method_block.setFunctionCall(i);
+					method_block.seen_variables = seen_variables;
 					
 					String[] args = MethodHelper.getArguments();
 					String[] params = MethodHelper.getParams();
+				
+					if(args.length > 0)
+						method_block.addToSeenVariables(SeenVariableOperations.getArgsInSeenVariables(args, params));
 					
-					method_block.addToSeenVariables(SeenVariableOperations.getArgsInSeenVariables(args, params));
 					seen_variables = SeenVariableOperations.getSeenVariables();
 					
 					if(unmatched.size() > 0) {
@@ -304,17 +306,17 @@ public class MainBlock extends Block{
 									else v.setValue(EvaluateType.eval());
 								}
 								else {
-									/**
-									 * TO DO: check if value is logical: true or false
-									 */
+									v.setType(Type.BOOLEAN);
+									v.setValue(EvaluateType.evaluateLogicalOperation(left));
 								}
 							}
+							else v.setValue(left);
 						}
 					}
 				}
 				else {
 					if(b.toString().startsWith("print")) {
-						String line = b.toString().replace("print", "").trim();
+						String line = b.toString().replace("print", "").replace("(", "").replace(")", "").trim();
 						String[] to_be_printed = line.split("\\+");
 						
 						for(int k = 0; k < to_be_printed.length; k ++) {
@@ -341,6 +343,7 @@ public class MainBlock extends Block{
 						MethodBlock mBlock = (MethodBlock) block;
 						if(mBlock.getFunctionCall() == i) {
 							mBlock.whatToDo();
+							
 							break;
 						}
 					}
@@ -356,6 +359,8 @@ public class MainBlock extends Block{
 	}
 	
 	public void initAll() {
+		initSeenVariables(1, end_main);
+		
 		defineBlocks(start_main, end_main);
 		defineMotherBlocks();
 		SeenVariableOperations.setSeenVariables(seen_variables);

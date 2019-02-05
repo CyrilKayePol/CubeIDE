@@ -73,18 +73,18 @@ public class ElsifBlock extends Block{
 										else v.setValue(EvaluateType.eval());
 									}
 									else {
-										/**
-										 * TO DO: check if value is logical: true or false
-										 */
+										v.setType(Type.BOOLEAN);
+										v.setValue(EvaluateType.evaluateLogicalOperation(left));
 									}
 								}
+								else v.setValue(left);
 							}
 						}
 						
 					}
 					else {
 						if(b.toString().startsWith("print")) {
-							String line = b.toString().replace("print", "").trim();
+							String line = b.toString().replace("print", "").replace("(", "").replace(")", "").trim();
 							String[] to_be_printed = line.split("\\+");
 							
 							for(int k = 0; k < to_be_printed.length; k ++) {
@@ -119,7 +119,8 @@ public class ElsifBlock extends Block{
 	}
 	public void evaluateCondition() {
 		condition = condition.replaceAll("\\s","");
-		String[] operands = condition.split("!=|==|>=|<=|>|<|\\|\\||&&|\\*|/|\\+|-|^");
+		String parenthesized = condition.replace("(", "").replace(")", "");
+		String[] operands = parenthesized.split("!=|==|>=|<=|>|<|\\||&|\\*|/|\\+|-|^");
 		
 		ArrayList<Object> params = new ArrayList<Object>();
 		StringBuilder inputParser = new StringBuilder(condition);

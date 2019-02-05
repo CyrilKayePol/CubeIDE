@@ -12,7 +12,7 @@ import cube.semantics.math_operations.ExpressionParser;
 public class SeenVariableOperations {
 	
 	private static ArrayList<Variable> seen_variables;
-	private static ArrayList<String> arguments;
+	private static ArrayList<String> arguments= new ArrayList<String>();
 	public static void setSeenVariables(ArrayList<Variable> variables) {
 		seen_variables = variables;
 	}
@@ -84,10 +84,12 @@ public class SeenVariableOperations {
 					}
 					else {
 						if(ExpressionParser.isValid) {
+							
 							vv.setType(Type.BOOLEAN);
 							String[] args = new String[arguments.size()];
 							String arg = putBraces(vv.getValue().toString());
-							vv.setValue(ExpressionParser.evaluate(arg, arguments.toArray(args)));
+							if((arg.equals("]["))) {} else vv.setValue(ExpressionParser.evaluate(arg, arguments.toArray(args)));
+							
 						}
 						else {
 							RunTimeException.showException(" Specified value is invalid ");
@@ -111,7 +113,7 @@ public class SeenVariableOperations {
 				m = m.insert(offset+vv.getName().length(), "]");
 				arguments.add(vv.getName());
 				arguments.add(vv.getValue().toString());
-				System.out.println(m);
+				
 			}
 		}
 		stmt = m.toString();

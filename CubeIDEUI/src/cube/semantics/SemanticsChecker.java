@@ -13,6 +13,7 @@ public class SemanticsChecker{
 	private int main_line_num, end_main_line_num;
 	
 	private MainBlock main_block;
+	//private Runnable output;
 	
 	public SemanticsChecker() {
 		line_hash = new HashMap<Integer, String>();
@@ -27,6 +28,8 @@ public class SemanticsChecker{
 		
 		main_block.whatToDo();
 		System.out.println("***************************************\n");
+		//output = new Output(MainBlock.output_value);
+		//new Thread(output).start();
 		System.out.println("OUTPUT VALUE\n"+ MainBlock.output_value);
 		System.out.println("***************************************");
 	}

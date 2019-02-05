@@ -36,7 +36,7 @@ public class EvaluateType {
 				isValid = true;
 			}
 			else if(operands[i].equals("true") || operands[i].equals("false")) {
-				RunTimeException.showException("Invalid Expression. One of the operands is a boolean. " + operands[i]);
+			//	RunTimeException.showException("Invalid Expression. One of the operands is a boolean. " + operands[i]);
 				isValid = false;
 				break;
 			}
@@ -48,7 +48,7 @@ public class EvaluateType {
 			else {
 				Variable v = SeenVariableOperations.findInSeenVariables(operands[i]);
 				if(v == null) {
-					RunTimeException.showException("Invalid Expression. One of the operands is undefined. " + operands[i]);
+			//		RunTimeException.showException("Invalid Expression. One of the operands is undefined. " + operands[i]);
 					isValid = false;
 					break;
 				}
@@ -142,7 +142,42 @@ public class EvaluateType {
 		return stack;
 	}
 	
-	public static boolean evaluateLogicalOperation() {
-		return false;
+	public static boolean evaluateLogicalOperation(String condition) {
+		boolean toEvaluate = false;
+		condition = condition.replaceAll("\\s","");
+		String parenthesized = condition.replace("(", "").replace(")", "");
+		String[] operands = parenthesized.split("!=|==|>=|<=|>|<|\\||&|\\*|/|\\+|-|^");
+		
+		ArrayList<Object> params = new ArrayList<Object>();
+		StringBuilder inputParser = new StringBuilder(condition);
+		for(String str:operands) {
+			Variable v = SeenVariableOperations.findInSeenVariables(str.trim());
+			if(v != null) {
+				int beginIndex = inputParser.indexOf(str.trim());
+				inputParser.insert(beginIndex, '[');
+				inputParser.insert(beginIndex+str.length()+1, ']');
+				params.add(str);
+				if(v.getValue() == null) params.add("");
+				else params.add(v.getValue().toString().trim());
+			}
+			else if(str.trim().equals("true")) {
+				
+				int index1 = inputParser.indexOf("true");
+				inputParser.replace(inputParser.indexOf("true"), index1+4, "(1>0)");
+			} 
+			else if(str.trim().equals("false")) {
+			
+				int index1 = inputParser.indexOf("false");
+				inputParser.replace(inputParser.indexOf("false"), index1+5, "(1<0)");
+			} 
+		}
+		try {
+			toEvaluate = (ExpressionParser.evaluate(inputParser.toString(),params.toArray()));
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
+			System.err.println(":::::::::::::::: Condition is not valid");
+		}
+		return toEvaluate;
 	}
 }

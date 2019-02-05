@@ -33,9 +33,12 @@ public class MethodHelper {
 		          if(index == 1)
 		        	  functionName = m.group(index);
 		     }
+		     if(functionName.equals("print"))
+		    	 return false;
 		     System.out.println("\t[INFO] @MethodHelper a function call matched" );
 		     return true;
 		}
+		
 		return false;
 	}
 	
@@ -102,6 +105,7 @@ public class MethodHelper {
 		
 		if(args != null && params !=null && args.length == params.length) {
 			arguments = args;
+			
 			return true;
 		}
 		else {

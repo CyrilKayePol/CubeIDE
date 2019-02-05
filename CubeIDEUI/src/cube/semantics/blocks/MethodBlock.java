@@ -12,7 +12,6 @@ public class MethodBlock extends MainBlock{
 
 	private int functionCall = 0;
 	public MethodBlock(HashMap<Integer, String> line_hash, int start_line, int end_line) {
-		
 		super(line_hash, Type.METHOD, end_line, start_line);
 	}
 	
@@ -54,17 +53,17 @@ public class MethodBlock extends MainBlock{
 									else v.setValue(EvaluateType.eval());
 								}
 								else {
-									/**
-									 * TO DO: check if value is logical: true or false
-									 */
+									v.setType(Type.BOOLEAN);
+									v.setValue(EvaluateType.evaluateLogicalOperation(left));
 								}
 							}
+							else v.setValue(left);
 						}
 					}
 				}
 				else {
 					if(b.toString().startsWith("print")) {
-						String line = b.toString().replace("print", "").trim();
+						String line = b.toString().replace("print", "").replace("(", "").replace(")", "").trim();
 						String[] to_be_printed = line.split("\\+");
 						
 						for(int k = 0; k < to_be_printed.length; k ++) {

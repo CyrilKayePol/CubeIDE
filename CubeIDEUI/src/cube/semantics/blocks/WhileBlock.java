@@ -34,6 +34,7 @@ public class WhileBlock extends Block{
 	}
 	@Override
 	public void whatToDo() {
+		
 		while(toEvaluate) {
 			for(int i = startline;i < endline;i++) {
 				Object b = lines_under_me.get(i);
@@ -59,9 +60,8 @@ public class WhileBlock extends Block{
 										else v.setValue(EvaluateType.eval());
 									}
 									else {
-										/**
-										 * TO DO: check if value is logical: true or false
-										 */
+										v.setType(Type.BOOLEAN);
+										v.setValue(EvaluateType.evaluateLogicalOperation(left));
 									}
 								}
 								else {
@@ -77,7 +77,7 @@ public class WhileBlock extends Block{
 					}
 					else {
 						if(b.toString().startsWith("print")) {
-							String line = b.toString().replace("print", "").trim();
+							String line = b.toString().replace("print", "").replace("(", "").replace(")", "").trim();
 							String[] to_be_printed = line.split("\\+");
 							
 							for(int k = 0; k < to_be_printed.length; k ++) {
@@ -117,12 +117,14 @@ public class WhileBlock extends Block{
 			System.out.println("what: "+ SeenVariableOperations.getSeenVariables().get(m).getValue());
 		}*/
 		conditions = conditions.replaceAll("\\s","");
-		String[] operands = conditions.split("!=|==|>=|<=|>|<|\\|\\||&&|\\*|/|\\+|-|^");
+		String parenthesized = conditions.replace("(", "").replace(")", "");
+		String[] operands = parenthesized.split("!=|==|>=|<=|>|<|\\||&|\\*|/|\\+|-|^");
 		
 		ArrayList<Object> params = new ArrayList<Object>();
 		StringBuilder inputParser = new StringBuilder(conditions);
 		for(String str:operands) {
 			Variable v = SeenVariableOperations.findInSeenVariables(str.trim());
+		
 			if(v != null) {
 				int beginIndex = inputParser.indexOf(str.trim());
 				inputParser.insert(beginIndex, '[');
