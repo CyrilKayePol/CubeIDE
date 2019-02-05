@@ -4,22 +4,25 @@ import java.util.LinkedList;
 
 import cube.exceptions.SourceException;
 import cube.gui.Cube;
+import cube.semantics.SemanticsChecker;
 
 public class SyntaxChecker {
 	private LinkedList<Token> tokens;
 	private int currentTokenIndex;
 	private Token currentToken;
 	private boolean isCodeBlock = false;
-  private int fwfCount, endCount;
+	private int fwfCount, endCount;
 	private boolean isMultipleAssignment = false;
+	private String code;
 	
-	public SyntaxChecker(LinkedList<Token> tokens) {
+	public SyntaxChecker(LinkedList<Token> tokens, String code) {
 		
 		this.tokens = tokens;
 		this.tokens.add(new Token("EOF", Token.TokenType.EOF, 0, 0));
 		this.currentTokenIndex = 0;
 		this.fwfCount = 0;
 		this.endCount = 0;
+		this.code = code;
 	}
 	
 	public void scan() throws SourceException {
@@ -44,8 +47,8 @@ public class SyntaxChecker {
 	}
 	
 	public void terminate() {
-		Cube.consolePane.setText(Cube.consolePane.getText()+"Notice : Source code is syntactically valid!");
 		System.out.println("Notice : Source code is syntactically valid!");
+		new SemanticsChecker(code);
 	}
 	
 	private void program() throws SourceException {
@@ -54,8 +57,9 @@ public class SyntaxChecker {
 	}
 	
 	private void declarations() throws SourceException {
-		System.out.println("king of my heart");
+		System.out.println("inside declarations() : "+currentToken.getValue());
 		if (currentToken.getType() == Token.TokenType.VAR) {
+			System.out.println("found var");
 			scan();
 			variableDeclarations();
 			scan();
@@ -100,7 +104,7 @@ public class SyntaxChecker {
 		}
 		else {
 			System.out.println(isCodeBlock);
-			throw new SourceException("Illegal line of code!", currentToken.getStartingRow(), currentToken.getStartingColumn());
+			throw new SourceException("Illegal Statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
 		}
 	}
 	
@@ -116,10 +120,12 @@ public class SyntaxChecker {
 	}
 	
 	private void variableStatements() throws SourceException {
+		System.out.println("inside variableStatements");
 		if (currentToken.getType() == Token.TokenType.SEPARATOR) {
 			scan();
 			variableDeclarations();
 		} else if (currentToken.getType() == Token.TokenType.NEW_LINE) {
+			
 			scan();
 			System.out.println("--------");
 			statements();
@@ -137,19 +143,26 @@ public class SyntaxChecker {
 			
 			
 		} else {
+			
 			System.out.println("I came "+ currentToken.getType());
 			throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
 		}
 	}
 	
 	private void variableValues() throws SourceException {
+		System.out.println("inside variablevalues");
 		scan();
 		if (currentToken.getType() == Token.TokenType.SEPARATOR) {
 			scan();
 			variableDeclarations();
 		} else if (currentToken.getType() == Token.TokenType.NEW_LINE ) {
 			scan();
-			statements();
+			
+			if(currentToken.getType() == Token.TokenType.FN) {
+				declarations();
+			}else {
+				statements();
+			}
 		}
 		else if (currentToken.getType() == Token.TokenType.O_PARENTHESIS ) {
 			scan();
@@ -389,6 +402,8 @@ public class SyntaxChecker {
 		}
 		else if(currentToken.getType() == Token.TokenType.NEW_LINE) {
 			throw new SourceException("Invalid Condition! ", currentToken.getStartingRow(), currentToken.getStartingColumn());
+		}else {
+			throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
 		}
 	}
 	private void conditionalStatements() throws SourceException{
@@ -479,9 +494,14 @@ public class SyntaxChecker {
 					if (currentToken.getType() == Token.TokenType.NEW_LINE) {
 							scan();
 							statements();
+					}else {
+						throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
 					}
+				}else if(currentToken.getType() == Token.TokenType.ADDITION){
+					scan();
+					concatPrint();
 				}else {
-					throw new SourceException("Missing Parenthesis", currentToken.getStartingRow(), currentToken.getStartingColumn());
+					throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
 				}
 			}else if(currentToken.getType() == Token.TokenType.USER_DEFINED_NAME) {
 				scan();
@@ -490,13 +510,55 @@ public class SyntaxChecker {
 					if (currentToken.getType() == Token.TokenType.NEW_LINE) {
 						scan();
 						statements();
+					}else {
+						throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
 					}
 				}else {
-					throw new SourceException("Missing Parenthesis", currentToken.getStartingRow(), currentToken.getStartingColumn());
+					throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
 				}
 			}
 		}else {
 			throw new SourceException("Missing Parenthesis", currentToken.getStartingRow(), currentToken.getStartingColumn());
+		}
+	}
+	
+	private void concatPrint() throws SourceException {
+		
+		if(currentToken.getType() == Token.TokenType.USER_DEFINED_NAME) {
+			scan();
+			if(currentToken.getType() == Token.TokenType.ADDITION) {
+				scan();
+				concatPrint();
+			}else if(currentToken.getType() == Token.TokenType.C_PARENTHESIS) {
+				scan();
+				if (currentToken.getType() == Token.TokenType.NEW_LINE) {
+					scan();
+					statements();
+				}else {
+					throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
+				}
+			}else {
+				throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
+			}
+		}else if(currentToken.getType() == Token.TokenType.STRING) {
+			scan();
+			if(currentToken.getType() == Token.TokenType.ADDITION) {
+				scan();
+				concatPrint();
+			}else if(currentToken.getType() == Token.TokenType.C_PARENTHESIS) {
+				scan();
+				if (currentToken.getType() == Token.TokenType.NEW_LINE) {
+					scan();
+					statements();
+				}else {
+					throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
+				}
+				
+			}else {
+				throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
+			}
+		}else {
+			throw new SourceException("Undefined token '+'", currentToken.getStartingRow(), currentToken.getStartingColumn());
 		}
 	}
 }

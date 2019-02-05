@@ -441,6 +441,7 @@ public class Cube extends JPanel implements ActionListener{
 			openFile();
 		}
 		else if(obj == run) {
+			 String msg = "";
 			 Lexer lexer = new Lexer();
 			 consolePane.setText("");
 			 @SuppressWarnings("unused")
@@ -453,7 +454,7 @@ public class Cube extends JPanel implements ActionListener{
 		            }
 		           output += ("Source String "+textPane.getText());
 		           
-		            SyntaxChecker sc = new SyntaxChecker(lexer.getTokens(textPane.getText()));
+		            SyntaxChecker sc = new SyntaxChecker(lexer.getTokens(textPane.getText()), textPane.getText());
 		          
 		            try {
 		            	 sc.start();
@@ -466,7 +467,7 @@ public class Cube extends JPanel implements ActionListener{
 		            System.out.println(se.getMessage());
 		        }
 		        
-		        //consolePane.setText(output);
+		        
 		}
 	}
 	public void saveFile(String toSave) {

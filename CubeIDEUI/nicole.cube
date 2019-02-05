@@ -8,6 +8,6 @@ fn main()
 		end
 	else
 		main()
-		print("if you")
+		print("if you" alkasdj)
 	end
 end

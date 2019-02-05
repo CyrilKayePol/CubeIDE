@@ -1,9 +1,12 @@
+
 var b = 7
 var c = 1
+
 fn main()
+
 	print ("Hello there from main!")
 	sayHelloThere(5, 4)
-	
+
 	if(b < 8 & c > 0)
 		c = false | (b > c)
 		print ("Less than 8" + c)
