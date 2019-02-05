@@ -1,39 +1,6 @@
-var b = 8
-var c = 1
 fn main()
-	print "Hello there from main!"
-	sayHelloThere(5, 4)
+	var b = 1
+	var c = 2 + b
 	
-	if(b < 8 && c > 0)
-		print "Less than 8"
-	elsif(b == 8 && c > 0)
-		c = (100 * 9 + (21 * 2)) - 350/350
-		print "Greater" + c
-	else
-		c = (100 * 9 + (21 * 2)) - 350/7
-		print "Equal" + c
-	end
-	
-end
-
-fn sayHelloThere(var iterations, var a)
-	print "hey"
-	while(iterations > 0)
-		print "yow"
-		a = 4
-		print "a "+ a
-		while (a > 0)
-			print "Inner loop "+ a
-			a = a-1
-		end
-		iterations = iterations -1
-	end
-end
-
-fn justSomething()
-	if(c < 1000)
-		print "C is less than 1000"
-	else
-		print "C is greater"
-	end
+	print ""+c
 end

@@ -39,7 +39,7 @@ public class Print {
 		int counter = 1;
 
             try {
-            	 File file = new File("src/Cube.cube");
+            	 File file = new File("Cube.cube");
                  
                  if(file.isFile()) {
                      BufferedReader br = new BufferedReader(new FileReader(file));
@@ -47,8 +47,8 @@ public class Print {
                      String line;
                      while ((line = br.readLine()) != null) {
                     	 line = line.trim();
-                    	 
-                    	 line_hash.put(new Integer(counter), line);
+                    	 System.out.println(line);
+                    	 line_hash.put(counter, line);
                     	 counter++;
                      }
                      br.close();
@@ -58,6 +58,21 @@ public class Print {
             }catch( IOException ex ) {
             	System.out.println("At catch clause of readFile method" + ex.getMessage());
             }
+	}
+	
+	public static void readCode(HashMap<Integer, String> line_hash, String code) {
+		int counter = 1;
+		String[] linesOfCode = code.split("\n");
+		
+		for(int i = 0; i<linesOfCode.length; i++) {
+			String line = linesOfCode[i].trim();
+			 System.out.println(line);
+			line_hash.put(counter, line);
+			counter++;
+		}
+                 
+            
+      
 	}
 	 /* ===================================================================================*/
 	

@@ -31,6 +31,23 @@ public class SemanticsChecker{
 		System.out.println("***************************************");
 	}
 	
+	public SemanticsChecker(String code) {
+		line_hash = new HashMap<Integer, String>();
+		
+		Print.readCode(line_hash, code);
+		findMain();
+		
+		main_block = new MainBlock(line_hash, Type.MAIN, main_line_num, end_main_line_num);
+		
+		main_block.initAll();
+		//Print.printMainBlockVariables(main_block);
+		
+		main_block.whatToDo();
+		System.out.println("***************************************\n");
+		System.out.println("OUTPUT VALUE\n"+ MainBlock.output_value);
+		System.out.println("***************************************");
+	}
+	
 	private void findMain() {
 		Object[] line_hash_values = line_hash.values().toArray();
 		

@@ -4,22 +4,25 @@ import java.util.LinkedList;
 
 import cube.exceptions.SourceException;
 import cube.gui.Cube;
+import cube.semantics.SemanticsChecker;
 
 public class SyntaxChecker {
 	private LinkedList<Token> tokens;
 	private int currentTokenIndex;
 	private Token currentToken;
 	private boolean isCodeBlock = false;
-  private int fwfCount, endCount;
+	private int fwfCount, endCount;
 	private boolean isMultipleAssignment = false;
+	private String code;
 	
-	public SyntaxChecker(LinkedList<Token> tokens) {
+	public SyntaxChecker(LinkedList<Token> tokens, String code) {
 		
 		this.tokens = tokens;
 		this.tokens.add(new Token("EOF", Token.TokenType.EOF, 0, 0));
 		this.currentTokenIndex = 0;
 		this.fwfCount = 0;
 		this.endCount = 0;
+		this.code = code;
 	}
 	
 	public void scan() throws SourceException {
@@ -46,6 +49,7 @@ public class SyntaxChecker {
 	public void terminate() {
 		Cube.consolePane.setText(Cube.consolePane.getText()+"Notice : Source code is syntactically valid!");
 		System.out.println("Notice : Source code is syntactically valid!");
+		new SemanticsChecker(code);
 	}
 	
 	private void program() throws SourceException {
