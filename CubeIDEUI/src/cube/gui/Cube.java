@@ -441,7 +441,8 @@ public class Cube extends JPanel implements ActionListener{
 			openFile();
 		}
 		else if(obj == run) {
-			 String msg = "";
+			 @SuppressWarnings("unused")
+			String msg = "";
 			 Lexer lexer = new Lexer();
 			 consolePane.setText("");
 			 @SuppressWarnings("unused")
