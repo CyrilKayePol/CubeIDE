@@ -179,9 +179,6 @@ public class SyntaxChecker {
 		}
 		else if (isOperator(currentToken.getType())) {
 			scan();
-			System.out.println("first");
-			scan();
-			System.out.println("second");
 			variableValues();
 		} else {
 			throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
