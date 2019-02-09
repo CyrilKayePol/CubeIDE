@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -455,7 +456,26 @@ public class Cube extends JPanel implements ActionListener{
 		            }
 		           output += ("Source String "+textPane.getText());
 		           
-		            SyntaxChecker sc = new SyntaxChecker(lexer.getTokens(textPane.getText()), textPane.getText());
+		           // get rid of comments
+		           StringBuilder sb = new StringBuilder();
+		           Scanner s = new Scanner(textPane.getText());
+		           while (s.hasNextLine()) {
+		        	   String line = s.nextLine();
+		        	   
+		        	   if (line.length() == 0) {
+		        		   sb.append('\n');
+		        		   continue;
+		        	   }
+		        	   
+		        	   if (line.trim().charAt(0) == '#')
+		        		   continue;
+		        	   else
+		        		   sb.append(line + '\n');
+		           }
+		           s.close();
+		           String cleanedString = new String(sb);
+		           
+		            SyntaxChecker sc = new SyntaxChecker(lexer.getTokens(cleanedString), cleanedString);
 		          
 		            try {
 		            	 sc.start();

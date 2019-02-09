@@ -66,7 +66,7 @@ public class TextLineNumber extends JPanel
 	{
 		this(component, 3);
 		component.setDocument(doc);
-		component.setFont(new Font(Font.SANS_SERIF, 5, 15));
+		component.setFont(new Font(Font.MONOSPACED, 5, 15));
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class TextLineNumber extends JPanel
 	{
 		this.component = component;
 		component.setDocument(doc);
-		component.setFont(new Font(Font.SANS_SERIF, 3, 15));
+		component.setFont(new Font(Font.MONOSPACED, 3, 15));
 		setFont( component.getFont() );
 
 		setBorderGap( 5 );
@@ -494,6 +494,9 @@ public class TextLineNumber extends JPanel
 		private static final long serialVersionUID = 1L;
 
 		public void insertString (int offset, String str, AttributeSet a) throws BadLocationException {
+			if(str.contains("\t"))
+				str = str.replace("\t", "   ");
+			
             super.insertString(offset, str, a);
 
             String text = getText(0, getLength());
@@ -505,7 +508,7 @@ public class TextLineNumber extends JPanel
             
             while (wordR <= after) {
                 if (wordR == after || String.valueOf(text.charAt(wordR)).matches("\\W")) {
-                    if (text.substring(wordL, wordR).matches("(\\W)*(break|next|do|return|fn|var|end|if|else|while)"))
+                    if (text.substring(wordL, wordR).matches("(\\W)*(break|next|do|return|fn|var|end|if|else|while|elsif)"))
                         setCharacterAttributes(wordL, wordR - wordL, attr, false);
                     else if (text.substring(wordL, wordR).matches("(\\W)*(\\d*\\.?\\d*)"))
                         setCharacterAttributes(wordL, wordR - wordL, attrBlue, false);
@@ -526,7 +529,7 @@ public class TextLineNumber extends JPanel
             if (before < 0) before = 0;
             int after = findFirstNonWordChar(text, offs);
 
-            if (text.substring(before, after).matches("(\\W)*(break|next|do|return|fn|var|end|if|else|while)")) 
+            if (text.substring(before, after).matches("(\\W)*(break|next|do|return|fn|var|end|if|else|while|elsif)")) 
                 setCharacterAttributes(before, after - before, attr, false);
              else if (text.substring(before, after).matches("(\\W)*(\\d*\\.?\\d*)"))
                   setCharacterAttributes(before, after - before, attrBlue, false);
