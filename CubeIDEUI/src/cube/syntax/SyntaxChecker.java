@@ -3,7 +3,6 @@ package cube.syntax;
 import java.util.LinkedList;
 
 import cube.exceptions.SourceException;
-import cube.gui.Cube;
 import cube.semantics.SemanticsChecker;
 
 public class SyntaxChecker {
