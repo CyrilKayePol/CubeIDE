@@ -48,7 +48,7 @@ public class SyntaxChecker {
 	
 	public void terminate() {
 		System.out.println("Notice : Source code is syntactically valid!");
-		new SemanticsChecker(code);
+		//new SemanticsChecker(code);
 	}
 	
 	private void program() throws SourceException {
@@ -137,12 +137,33 @@ public class SyntaxChecker {
 			if (currentToken.getType() == Token.TokenType.USER_DEFINED_NAME) {
 				scan();
 				variableStatements();
+			
 			}else {
 				variableValues();
 			}
 			
 			
-		} else {
+		} else if(checkRelational()){
+			scan();
+			
+			if(currentToken.getType() == Token.TokenType.AND 
+					|| currentToken.getType() == Token.TokenType.OR) {
+				scan();
+				if(currentToken.getType() == Token.TokenType.USER_DEFINED_NAME ||
+						currentToken.getType() == Token.TokenType.INTEGER || 
+						currentToken.getType() == Token.TokenType.FLOAT || 
+						currentToken.getType() == Token.TokenType.FALSE || 
+						currentToken.getType() == Token.TokenType.TRUE) {
+					scan();
+					variableStatements();
+				}else {
+					throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
+				}
+				
+			}else {
+				variableStatements();
+			}
+		}else {
 			
 			System.out.println("I came "+ currentToken.getType());
 			throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
@@ -172,13 +193,65 @@ public class SyntaxChecker {
 			scan();
 			variableValues();
 		}
-		else if (currentToken.getType() == Token.TokenType.INTEGER||currentToken.getType() == Token.TokenType.FALSE
-				||currentToken.getType() == Token.TokenType.FLOAT||currentToken.getType() == Token.TokenType.TRUE
+		else if (currentToken.getType() == Token.TokenType.INTEGER || currentToken.getType() == Token.TokenType.FALSE
+				||currentToken.getType() == Token.TokenType.FLOAT || currentToken.getType() == Token.TokenType.TRUE
 				||currentToken.getType() == Token.TokenType.STRING) {
 			scan();
 			variableValues();
-		}
-		else if (isOperator(currentToken.getType())) {
+			
+			
+		}else if(currentToken.getType() == Token.TokenType.AND || currentToken.getType() == Token.TokenType.OR) {
+			System.out.println("||||||||||||||||||||||||");
+			
+			
+				scan();
+				if(currentToken.getType() == Token.TokenType.O_PARENTHESIS) {
+					System.out.println(" open parintisis");
+					conditionalStatements();
+					
+				}else if(currentToken.getType() == Token.TokenType.FALSE||
+						currentToken.getType() == Token.TokenType.TRUE){
+					scan();
+					variableStatements();
+				}else if(currentToken.getType() == Token.TokenType.USER_DEFINED_NAME||
+						currentToken.getType() == Token.TokenType.INTEGER ||
+						currentToken.getType() == Token.TokenType.FLOAT){
+						scan();
+						
+						while(isOperator(currentToken.getType())) {
+							scan();
+							if(currentToken.getType() == Token.TokenType.USER_DEFINED_NAME||
+									currentToken.getType() == Token.TokenType.INTEGER ||
+									currentToken.getType() == Token.TokenType.FLOAT){
+								scan();
+							}else {
+								throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
+							}
+						}
+						
+						if(checkRelational()) {
+							scan();
+							variableStatements();
+						}
+				}else {
+					conditionsVar();
+					 if (currentToken.getType() == Token.TokenType.NEW_LINE ) {
+							scan();
+							
+							if(currentToken.getType() == Token.TokenType.FN) {
+								declarations();
+							}else {
+								statements();
+							}
+					}
+				}
+				
+			
+		}else if (isOperator(currentToken.getType())) {
+			scan();
+			variableValues();
+		}else if(checkRelational()) {
+			System.out.println("+=+=+=");
 			scan();
 			variableValues();
 		} else {
@@ -419,6 +492,24 @@ public class SyntaxChecker {
 	}
 	private void conditions() throws SourceException{
 		while(currentToken.getType() != Token.TokenType.C_PARENTHESIS) {
+			scan();
+			boolean isRelational = checkRelational();
+			System.out.println("I came at conditions "+isRelational);
+			
+			if(isRelational) {
+				scan();
+				
+				logical();
+			}
+			else {
+				logical();
+				System.out.println(currentToken.getType());
+			}
+		}
+	}
+	
+	private void conditionsVar() throws SourceException{
+		while(currentToken.getType() != Token.TokenType.NEW_LINE) {
 			scan();
 			boolean isRelational = checkRelational();
 			System.out.println("I came at conditions "+isRelational);
