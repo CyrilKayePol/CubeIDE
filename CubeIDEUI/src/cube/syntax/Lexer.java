@@ -47,49 +47,12 @@ public class Lexer {
                 this.currentLine++;
             } else if (isSymbol(c)) {
                 handleSymbols();
-            } else if(c == '#') {
-            	handleComments();
-          
             }
 
             c = updateCurrentCharacter();
         }
     }
     
-    private void handleComments() throws SourceException{
-    	
-    	
-    	char c = updateCurrentCharacter();
-    	int count = 0;
-    	int end = 0;
-    	if(c == '#') {
-    		c = updateCurrentCharacter();
-    		if(c == '#') {
-    			while(count != 3) {
-    				end = this.currentCharIndex +1;
-    				if(end == this.source.length()) {
-    					throw new SourceException("Illegal comment syntax.", this.currentLine, this.currentColumn);
-    				}
-    				c = updateCurrentCharacter();
-    				
-    				if(c == '#') {
-    					count++;
-    				}else if(c != '#' && count != 0){
-    					count = 0;
-    				}
-    			}
-    		}else {
-    			 throw new SourceException("Illegal comment syntax.", this.currentLine, this.currentColumn);
-    		}
-    	}else {
-    		while(c != '\n') {
-    			c = updateCurrentCharacter();
-    		}
-    	}
-    	/*sjdhfskhdfjs*/
-    	
-    	
-    }
     private void handleNumbers() throws SourceException {
         char c = this.source.charAt(this.currentCharIndex);
         boolean hasDecimalPoint = false;
