@@ -474,8 +474,6 @@ public class Cube extends JPanel implements ActionListener{
 		           }
 		           s.close();
 		           String cleanedString = new String(sb);
-		           System.out.println(textPane.getText());
-		           System.out.println(cleanedString);
 		           
 		            SyntaxChecker sc = new SyntaxChecker(lexer.getTokens(cleanedString), cleanedString);
 		          
