@@ -173,6 +173,9 @@ public class MainBlock extends Block{
 					RunTimeException.showException("Function is undefined. Number of arguments does not match. ");
 				}
 			}
+			else if(line_hash.get(i).startsWith("#")) {
+				line_hash.replace(i, "");
+			}
 			else {
 				/**
 				 * TO-DO

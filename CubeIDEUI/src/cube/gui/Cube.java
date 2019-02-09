@@ -227,6 +227,7 @@ public class Cube extends JPanel implements ActionListener{
 		console.setBounds(495, 440, 100, 40);
 		
 		consolePane = new JTextPane();
+		consolePane.setFont(new Font(Font.SANS_SERIF, 1, 12));
 		consolePane.setBackground(new Color(211, 211, 211));
 		belowScrollPane = new JScrollPane(consolePane);
 		belowScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);

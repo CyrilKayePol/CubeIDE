@@ -60,7 +60,7 @@ public class SeenVariableOperations {
 			
 			if(!hasEntered) {
 				if(right.contains("+")|| right.contains("-") || right.contains("\\") ||
-						right.contains("|") || right.contains("&&") ||right.contains("*") || 
+						right.contains("|") || right.contains("&") ||right.contains("*") || 
 						right.contains("!")||(right.contains("(" )&& right.contains(")"))){
 							v.setValue(right);
 							v.setType(Type.EVAL);
@@ -87,7 +87,7 @@ public class SeenVariableOperations {
 							
 							vv.setType(Type.BOOLEAN);
 							String[] args = new String[arguments.size()];
-							String arg = putBraces(vv.getValue().toString());
+							String arg = putBraces(vv.getValue().toString().replace("true", "(1>0)").replace("false", "(1<0)"));
 							if((arg.equals("]["))) {} else vv.setValue(ExpressionParser.evaluate(arg, arguments.toArray(args)));
 							
 						}

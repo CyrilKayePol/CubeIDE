@@ -139,7 +139,9 @@ public class WhileBlock extends Block{
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
+			MainBlock.output_value += ":::::::::::::::: Condition is not valid" + "\n";
 			System.out.println("::::::::::::::::: Condition is not valid");
+			return;
 		}
 	}
 }

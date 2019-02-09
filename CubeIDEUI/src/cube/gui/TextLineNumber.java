@@ -487,17 +487,18 @@ public class TextLineNumber extends JPanel
     final AttributeSet attr = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.RED);
     final AttributeSet attrBlue = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.BLUE);
     final AttributeSet attrBlack = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.BLACK);
+    final AttributeSet attrGreen = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.GREEN);
     DefaultStyledDocument doc = new DefaultStyledDocument() {
         /**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-
+		
 		public void insertString (int offset, String str, AttributeSet a) throws BadLocationException {
 			if(str.contains("\t"))
 				str = str.replace("\t", "   ");
 			
-            super.insertString(offset, str, a);
+			super.insertString(offset, str, a);
 
             String text = getText(0, getLength());
             int before = findLastNonWordChar(text, offset);
@@ -507,17 +508,31 @@ public class TextLineNumber extends JPanel
             int wordR = before;
             
             while (wordR <= after) {
-                if (wordR == after || String.valueOf(text.charAt(wordR)).matches("\\W")) {
-                    if (text.substring(wordL, wordR).matches("(\\W)*(break|next|do|return|fn|var|end|if|else|while|elsif)"))
+                if (wordR == after || (String.valueOf(text.charAt(wordR)).matches("\\W"))) {
+                    if (text.substring(wordL, wordR).matches("(\\W)*(break|next|do|return|fn|var|end|if|else|while|elsif|print)"))
                         setCharacterAttributes(wordL, wordR - wordL, attr, false);
-                    else if (text.substring(wordL, wordR).matches("(\\W)*(\\d*\\.?\\d*)"))
-                        setCharacterAttributes(wordL, wordR - wordL, attrBlue, false);
-                    else
-                        setCharacterAttributes(wordL, wordR - wordL, attrBlack, false);
+                   // else if (text.substring(wordL, wordR).matches("(\\W)*(\\d*\\.?\\d*)"))
+                     //   setCharacterAttributes(wordL, wordR - wordL, attrBlue, false);
+                    else if(text.substring(wordL, wordR).matches("#(.+?)*"))
+                    	setCharacterAttributes(wordL, wordR - wordL, attrGreen, false);
+                    else 
+                    	setCharacterAttributes(wordL, wordR - wordL, attrBlack, false);
+                    
                     wordL = wordR;
+                   
                 }
                 wordR++;
-                
+            }
+            String[] lines = text.split("\n");
+            for(int i = 0; i < lines.length; i++) {
+            	int temp = text.indexOf(lines[i]);
+            	if(lines[i].trim().startsWith("#")) {
+            		setCharacterAttributes(temp,lines[i].length() , attrGreen, false);
+            	}
+            	else if(lines[i].contains("\"")) {
+            		int ind = lines[i].indexOf("\"");
+            		setCharacterAttributes(temp+ind,lines[i].lastIndexOf("\"") -ind + 1, attrBlue, false);
+            	}
             }
         }
 
@@ -535,6 +550,17 @@ public class TextLineNumber extends JPanel
                   setCharacterAttributes(before, after - before, attrBlue, false);
              else {
                 setCharacterAttributes(before, after - before, attrBlack, false);
+            }
+            String[] lines = text.split("\n");
+            for(int i = 0; i < lines.length; i++) {
+            	int temp = text.indexOf(lines[i]);
+            	if(lines[i].trim().startsWith("#")) {
+            		setCharacterAttributes(temp,lines[i].length() , attrGreen, false);
+            	}
+            	else if(lines[i].contains("\"")) {
+            		int ind = lines[i].indexOf("\"");
+            		setCharacterAttributes(temp+ind,lines[i].lastIndexOf("\"") -ind+1 , attrBlue, false);
+            	}
             }
         }
     };

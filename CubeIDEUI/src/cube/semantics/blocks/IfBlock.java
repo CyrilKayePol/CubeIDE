@@ -166,7 +166,9 @@ public class IfBlock extends Block{
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
+			MainBlock.output_value += ":::::::::::::::: Condition is not valid" + "\n";
 			System.err.println(":::::::::::::Condition is not valid");
+			return;
 		}
 	}
 }

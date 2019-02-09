@@ -1,5 +1,7 @@
 package cube.semantics.math_operations;
 
+import cube.semantics.blocks.MainBlock;
+
 public class ExpressionParser {
 	private static final String[] operators = { "!=", "==", ">=", "<=", ">", "<", "|", "&", "*", "/", "+", "-", "^" };
 	public static boolean isValid = true;
@@ -11,6 +13,7 @@ public class ExpressionParser {
                     	return parseWithStrings(ex);
                     }
             }
+            MainBlock.output_value += ":::::::::::::::: ERROR: Expression cannot be empty! " + "\n";
             System.err.println("ERROR: Expression cannot be empty!");
             isValid = false;
             return false;
@@ -25,11 +28,11 @@ public class ExpressionParser {
     }
 
     public static boolean evaluate(String or, String... vars){
-            if ((vars.length % 2 == 1 || vars.length < 2) && vars.length != 0)
-            {
-                    System.err.println(":::::::::: ERROR: Invalid arguments!");
-                    isValid = false;
-                    return false;
+            if ((vars.length % 2 == 1 || vars.length < 2) && vars.length != 0){
+            	 MainBlock.output_value += ":::::::::: ERROR: Invalid arguments!" + "\n";
+                 System.err.println(":::::::::: ERROR: Invalid arguments!");
+                 isValid = false;
+                 return false;
             }
             for (int i = 0; i < vars.length; i += 2)
                     or = or.replace("[" + vars[i] + "]", "" + vars[i + 1]);
@@ -176,6 +179,7 @@ public class ExpressionParser {
             case "!=":
                     return left != right;
             default:
+            		MainBlock.output_value += ":::::::::: ERROR: Operator type not recognized. " + "\n";
                     System.err.println("ERROR: Operator type not recognized. " + op);
                     isValid = false;
                     return false;
@@ -209,6 +213,7 @@ public class ExpressionParser {
             case "^":
                     return Math.pow(result1, result2);
             default:
+            	MainBlock.output_value += ":::::::::: MATH ERROR: Mismatched Input. " + "\n";
                     System.err.println("MATH ERROR: Mismatched Input.");
                     isValid = false;
                     return 0;
@@ -223,6 +228,7 @@ public class ExpressionParser {
             case "!=":
                     return !left.equals(right);
             default:
+            	MainBlock.output_value += ":::::::::: ERROR: Operator type not recognized.  " + "\n";
                     System.err.println("ERROR: Operator type not recognized. " + right);
                     isValid = false;
                     return false;
