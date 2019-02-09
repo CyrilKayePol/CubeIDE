@@ -47,7 +47,7 @@ public class SyntaxChecker {
 	
 	public void terminate() {
 		System.out.println("Notice : Source code is syntactically valid!");
-		new SemanticsChecker(code);
+		//new SemanticsChecker(code);
 	}
 	
 	private void program() throws SourceException {
@@ -137,7 +137,18 @@ public class SyntaxChecker {
 				scan();
 				variableStatements();
 			
+			}else if(currentToken.getType() == Token.TokenType.INTEGER ||
+					currentToken.getType() == Token.TokenType.FLOAT){
+				scan();
+				if(currentToken.getType() == Token.TokenType.AND||
+						currentToken.getType() == Token.TokenType.OR) {
+					throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
+					
+				}else {
+					variableValues();
+				}
 			}else {
+				scan();
 				variableValues();
 			}
 			
@@ -171,7 +182,7 @@ public class SyntaxChecker {
 	
 	private void variableValues() throws SourceException {
 		System.out.println("inside variablevalues");
-		scan();
+		
 		if (currentToken.getType() == Token.TokenType.SEPARATOR) {
 			scan();
 			variableDeclarations();
@@ -247,10 +258,6 @@ public class SyntaxChecker {
 				
 			
 		}else if (isOperator(currentToken.getType())) {
-			scan();
-			variableValues();
-		}else if(checkRelational()) {
-			System.out.println("+=+=+=");
 			scan();
 			variableValues();
 		} else {
