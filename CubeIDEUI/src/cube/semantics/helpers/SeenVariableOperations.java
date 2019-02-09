@@ -6,6 +6,7 @@ import java.util.HashMap;
 import cube.exceptions.RunTimeException;
 import cube.semantics.Type;
 import cube.semantics.Variable;
+import cube.semantics.blocks.MainBlock;
 import cube.semantics.math_operations.EvaluateType;
 import cube.semantics.math_operations.ExpressionParser;
 
@@ -84,7 +85,6 @@ public class SeenVariableOperations {
 					}
 					else {
 						if(ExpressionParser.isValid) {
-							
 							vv.setType(Type.BOOLEAN);
 							String[] args = new String[arguments.size()];
 							String arg = putBraces(vv.getValue().toString().replace("true", "(1>0)").replace("false", "(1<0)"));
@@ -110,9 +110,13 @@ public class SeenVariableOperations {
 			if(stmt.contains(vv.getName())) {
 				int offset = m.indexOf(vv.getName());
 				m = m.insert(offset, "[");
-				m = m.insert(offset+vv.getName().length(), "]");
+				m = m.insert(offset+vv.getName().length() +1, "]");
 				arguments.add(vv.getName());
-				arguments.add(vv.getValue().toString());
+				try {
+					arguments.add(vv.getValue().toString());
+				}catch(Exception e) {
+					MainBlock.output_value += ":::::::::: Null Pointer Exception. One of the variable is uninitialized." + "\n";
+				}
 				
 			}
 		}

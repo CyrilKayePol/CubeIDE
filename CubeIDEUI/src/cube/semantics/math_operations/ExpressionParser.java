@@ -180,7 +180,7 @@ public class ExpressionParser {
                     return left != right;
             default:
             		MainBlock.output_value += ":::::::::: ERROR: Operator type not recognized. " + "\n";
-                    System.err.println("ERROR: Operator type not recognized. " + op);
+                    System.err.println("ERROR: Operator type not recognized. i came yow" + op);
                     isValid = false;
                     return false;
             }
@@ -229,7 +229,7 @@ public class ExpressionParser {
                     return !left.equals(right);
             default:
             	MainBlock.output_value += ":::::::::: ERROR: Operator type not recognized.  " + "\n";
-                    System.err.println("ERROR: Operator type not recognized. " + right);
+                    System.err.println("ERROR: Operator type not recognized. why would i came" + left);
                     isValid = false;
                     return false;
             }

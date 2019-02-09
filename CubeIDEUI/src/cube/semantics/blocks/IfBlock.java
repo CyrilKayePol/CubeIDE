@@ -162,7 +162,8 @@ public class IfBlock extends Block{
 			}
 		}
 		try {
-			toEvaluate = (ExpressionParser.evaluate(inputParser.toString(),params.toArray()));
+			String input = inputParser.toString().replace("true", "(1>0)").replace("false", "(1<0)");
+			toEvaluate = (ExpressionParser.evaluate(input,params.toArray()));
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
