@@ -87,7 +87,8 @@ public class SeenVariableOperations {
 						if(ExpressionParser.isValid) {
 							vv.setType(Type.BOOLEAN);
 							String[] args = new String[arguments.size()];
-							String arg = putBraces(vv.getValue().toString().replace("true", "(1>0)").replace("false", "(1<0)"));
+							String arg = putBraces(vv.getValue().toString().replace("true", "(1>0)").replace("false", 
+									"(1<0)"));
 							if((arg.equals("]["))) {} else vv.setValue(ExpressionParser.evaluate(arg, arguments.toArray(args)));
 							
 						}

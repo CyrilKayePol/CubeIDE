@@ -6,7 +6,6 @@ public class ExpressionParser {
 	private static final String[] operators = { "!=", "==", ">=", "<=", ">", "<", "|", "&", "*", "/", "+", "-", "^" };
 	public static boolean isValid = true;
     private static boolean parseAndEvaluateExpression(String ex){
-    	
             for (char c : ex.toCharArray())
             {
                     if (!Character.isSpaceChar(c)) {
@@ -20,7 +19,6 @@ public class ExpressionParser {
     }
     @SafeVarargs
 	public static <T> boolean evaluate(String or, T... rep){
-    	
             String[] temp = new String[rep.length];
             for (int i = 0; i < rep.length; i++)
                     temp[i] = "" + rep[i];
@@ -37,13 +35,15 @@ public class ExpressionParser {
             for (int i = 0; i < vars.length; i += 2)
                     or = or.replace("[" + vars[i] + "]", "" + vars[i + 1]);
            
-            return parseAndEvaluateExpression(or);
+            return parseAndEvaluateExpression(or.replaceAll("\\s", "").replace("(", "").replace(")", ""));
     }
     private static boolean parseWithStrings(String s) {
             int[] op = determineOperatorPrecedenceAndLocation(s);
             int start = op[0];
+      
             String left = s.substring(0, start).trim();
             String right = s.substring(op[1]).trim();
+            
             String oper = s.substring(start, op[1]).trim();
             int logType = logicalOperatorType(oper);
             if (logType == 0) // encounters OR- recurse
@@ -80,6 +80,7 @@ public class ExpressionParser {
                                     // Idea here is to weight logical operators so that they will still be selected over other operators
                                     // when no parens are present
                                     int parens = (logicalOperatorType(sub) > -1) ? parens(s, locInStr) - 1 : parens(s, locInStr);
+                                    System.out.println("parens "+ parens);
                                     if (containsMathematicalOperator(sub))
                                     {
                                             // Order of operations weighting

@@ -19,7 +19,7 @@ public class SemanticsChecker{
 	public SemanticsChecker() {
 		line_hash = new HashMap<Integer, String>();
 		
-		//Print.readFile(line_hash);
+		Print.readFile(line_hash);
 		findMain();
 		
 		main_block = new MainBlock(line_hash, Type.MAIN, main_line_num, end_main_line_num);

@@ -180,12 +180,24 @@ public class MainBlock extends Block{
 				/**
 				 * TO-DO
 				 */
-				if(line_hash.get(i).startsWith("var")) {}
+				if(line_hash.get(i).startsWith("var")) {
+					Variable new_var = null;
+					String var = line_hash.get(i).replaceAll("var ","");
+					if(var.indexOf('=') > 0) {
+						new_var = new Variable((var.substring(0, var.indexOf("="))).trim(),
+								var.substring(var.indexOf("=") +1, var.length()));
+						
+					}
+					else {
+						new_var = new Variable(var.trim(), null);
+					}
+					SeenVariableOperations.removeVariableIfExists(new_var.getName());
+					seen_variables.add(new_var);
+				}
 				else {
 					if(!line_hash.get(i).startsWith("end")) {
 						above.getLinesUnderMe().put(i, line_hash.get(i));
 					}
-						
 				}
 			}
 			int size = unmatched.size();
