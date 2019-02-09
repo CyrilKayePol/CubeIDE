@@ -144,6 +144,27 @@ public class SyntaxChecker {
 						currentToken.getType() == Token.TokenType.OR) {
 					throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
 					
+				}else if(checkRelational()) {
+					scan();
+					
+					if(currentToken.getType() == Token.TokenType.AND 
+							|| currentToken.getType() == Token.TokenType.OR) {
+						scan();
+						if(currentToken.getType() == Token.TokenType.USER_DEFINED_NAME ||
+								currentToken.getType() == Token.TokenType.INTEGER || 
+								currentToken.getType() == Token.TokenType.FLOAT || 
+								currentToken.getType() == Token.TokenType.FALSE || 
+								currentToken.getType() == Token.TokenType.TRUE) {
+							scan();
+							variableStatements();
+						}else {
+							throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
+						}
+						
+					}else {
+						variableStatements();
+					}
+					
 				}else {
 					variableValues();
 				}
