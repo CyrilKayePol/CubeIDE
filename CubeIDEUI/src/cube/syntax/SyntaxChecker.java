@@ -47,7 +47,7 @@ public class SyntaxChecker {
 	
 	public void terminate() {
 		System.out.println("Notice : Source code is syntactically valid!");
-		//new SemanticsChecker(code);
+		new SemanticsChecker(code);
 	}
 	
 	private void program() throws SourceException {
