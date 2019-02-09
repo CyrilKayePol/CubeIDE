@@ -127,7 +127,7 @@ public class SyntaxChecker {
 			
 			scan();
 			System.out.println("--------");
-			statements();
+			declarations();
 			System.out.println("*******");
 			
 		} else if (isOperator(currentToken.getType())) {
