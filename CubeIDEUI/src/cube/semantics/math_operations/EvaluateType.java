@@ -91,7 +91,6 @@ public class EvaluateType {
 	        double parse() {
 	            nextChar();
 	            double x = parseExpression();
-	            System.out.println("to eval "+ to_evaluate);
 	            if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char)ch);
 	            return x;
 	        }

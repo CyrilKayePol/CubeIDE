@@ -80,7 +80,7 @@ public class ExpressionParser {
                                     // Idea here is to weight logical operators so that they will still be selected over other operators
                                     // when no parens are present
                                     int parens = (logicalOperatorType(sub) > -1) ? parens(s, locInStr) - 1 : parens(s, locInStr);
-                                    System.out.println("parens "+ parens);
+                                  
                                     if (containsMathematicalOperator(sub))
                                     {
                                             // Order of operations weighting

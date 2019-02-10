@@ -56,7 +56,6 @@ public class MainBlock extends Block{
 			String value_at_i = line_hash.get(new Integer(i));
 			if(value_at_i.startsWith("var")) {
 				value_at_i = value_at_i.replaceAll("var ","");
-				
 				String[] line_var = value_at_i.split(",");
 				
 				for(int j = 0; j < line_var.length; j++) {
@@ -93,6 +92,7 @@ public class MainBlock extends Block{
 				sub_blocks.add(if_block);
 				unmatched.add(if_block);
 				if_block.setVariables(seen_variables);
+				//above.getSubBlocks().add(if_block);
 				above = if_block;
 			}
 			else if (line_hash.get(i).startsWith("elsif")) {
@@ -102,9 +102,11 @@ public class MainBlock extends Block{
 				String con = elsif_line.substring(elsif_line.indexOf("(") + 1, elsif_line.indexOf(")"));
 				
 				elsif_block.setCondition(con);
+				//sub_blocks.add(elsif_block);
 				above = elsif_block;
 				for(int j = unmatched.size() -1; j >= 0; j--) {
 					if(unmatched.get(j).getType() == Type.IF) {
+						
 						((IfBlock)unmatched.get(j)).getElsifs().add(elsif_block);
 						elsif_block.setMotherBlock((IfBlock)unmatched.get(j));
 						elsif_block.setIfOwner((IfBlock)unmatched.get(j));
@@ -117,7 +119,7 @@ public class MainBlock extends Block{
 			}
 			else if(line_hash.get(i).startsWith("else")) {
 				ElseBlock else_block = new ElseBlock(null, -1, i);
-				
+				//sub_blocks.add(else_block);
 				above = else_block;
 				for(int j = unmatched.size() -1; j >= 0; j--) {
 					if(unmatched.get(j).getType() == Type.IF) {
@@ -141,8 +143,8 @@ public class MainBlock extends Block{
 				while_block.setCondition(con);
 				sub_blocks.add(while_block);
 				unmatched.add(while_block);
+				//above.getSubBlocks().add(while_block);
 				while_block.setVariables(seen_variables);
-				
 				above = while_block;
 			}
 			else if(MethodHelper.functionCallMatcher(line_hash.get(i))){
@@ -168,6 +170,7 @@ public class MainBlock extends Block{
 					else {
 						sub_blocks.add(method_block);
 					}
+					above.getSubBlocks().add(method_block);
 				}
 				else {
 					RunTimeException.showException("Function is undefined. Number of arguments does not match. ");
@@ -181,18 +184,22 @@ public class MainBlock extends Block{
 				 * TO-DO
 				 */
 				if(line_hash.get(i).startsWith("var")) {
-					Variable new_var = null;
-					String var = line_hash.get(i).replaceAll("var ","");
-					if(var.indexOf('=') > 0) {
-						new_var = new Variable((var.substring(0, var.indexOf("="))).trim(),
-								var.substring(var.indexOf("=") +1, var.length()));
-						
+					String value_at_i = line_hash.get(i).replaceAll("var ","");
+					String[] line_var = value_at_i.split(",");
+					
+					for(int j = 0; j < line_var.length; j++) {
+						String var = line_var[j];
+						Variable new_var = null;
+						if(var.indexOf('=') > 0) {
+							new_var = new Variable((var.substring(0, var.indexOf("="))).trim(),
+									var.substring(var.indexOf("=") +1, var.length()));
+						}
+						else {
+							new_var = new Variable(var.trim(), null);
+						}
+						SeenVariableOperations.removeVariableIfExists(new_var.getName());
+						seen_variables.add(new_var);
 					}
-					else {
-						new_var = new Variable(var.trim(), null);
-					}
-					SeenVariableOperations.removeVariableIfExists(new_var.getName());
-					seen_variables.add(new_var);
 				}
 				else {
 					if(!line_hash.get(i).startsWith("end")) {
@@ -227,8 +234,6 @@ public class MainBlock extends Block{
 						inner.getStartline() > outer.getStartline()) {
 					inner.setMotherBlock(outer);
 				}
-				
-					
 			}
 		}
 	}

@@ -122,16 +122,24 @@ public class WhileBlock extends Block{
 		
 		ArrayList<Object> params = new ArrayList<Object>();
 		StringBuilder inputParser = new StringBuilder(conditions);
-		for(String str:operands) {
-			Variable v = SeenVariableOperations.findInSeenVariables(str.trim());
-		
+		if(operands.length > 1) {
+			for(String str:operands) {
+				Variable v = SeenVariableOperations.findInSeenVariables(str.trim());
+				if(v != null) {
+					int beginIndex = inputParser.indexOf(str.trim());
+					inputParser.insert(beginIndex, '[');
+					inputParser.insert(beginIndex+str.length()+1, ']');
+					params.add(str);
+					if(v.getValue() == null) params.add("");
+					else params.add(v.getValue().toString().trim());
+				}
+			}
+		}
+		else {
+			Variable v = SeenVariableOperations.findInSeenVariables(parenthesized.trim());
 			if(v != null) {
-				int beginIndex = inputParser.indexOf(str.trim());
-				inputParser.insert(beginIndex, '[');
-				inputParser.insert(beginIndex+str.length()+1, ']');
-				params.add(str);
-				if(v.getValue() == null) params.add("");
-				else params.add(v.getValue().toString().trim());
+				if(v.getType()==Type.BOOLEAN)
+				inputParser.replace(0, parenthesized.trim().length(), v.getValue().toString());
 			}
 		}
 		try {

@@ -76,7 +76,9 @@ public class SeenVariableOperations {
 	public static void evaluateEvalType() {
 		for(Variable vv : seen_variables) {
 			if(vv.getType() != null) {
+				
 				if(vv.getType().equals(Type.EVAL)) {
+					
 					EvaluateType.evaluate(vv, vv.getValue().toString());
 					
 					if(EvaluateType.checkIfValidArithmeticOperands()) {
@@ -98,6 +100,7 @@ public class SeenVariableOperations {
 						ExpressionParser.isValid = true;
 					}
 				}
+				
 			}
 			
 		}

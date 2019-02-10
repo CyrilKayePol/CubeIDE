@@ -1,7 +1,26 @@
 fn main()
-   var a, b = 6
+   var a, b = 6, ld
   	
-   var ld = b <4 & 5 > 6 | true
-   print(ld)
+   var ld = b <4 & 5 > 6 | false
+   if(ld)
+   		var a = 0
+   		while(a<5)
+   			print("A: "+a)
+   			a = a+1
+   		end	
+   		print("Hi there damn")
+   elsif(b < 7)
+   	print("hi")
+   		while(b > 0)
+   			print("B: "+b)
+   			b = b-1
+   		end
+   		
+   		if(true)
+   			print("true with me")
+   		elsif(false)
+   			print("false")
+   		end
+   end
   
 end
