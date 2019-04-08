@@ -1,4 +1,4 @@
- package cube.syntax;
+package cube.syntax;
 
 import java.util.LinkedList;
 
@@ -102,7 +102,7 @@ public class SyntaxChecker {
 			codeBlock();
 		}
 		else {
-			System.out.println("isCodeBlock:"+isCodeBlock);
+			System.out.println(isCodeBlock);
 			throw new SourceException("Illegal Statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
 		}
 	}
@@ -126,8 +126,8 @@ public class SyntaxChecker {
 		} else if (currentToken.getType() == Token.TokenType.NEW_LINE) {
 			
 			scan();
-			isCodeBlock = false;
 			System.out.println("--------");
+			isCodeBlock = false;
 			declarations();
 			System.out.println("*******");
 			

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cube.exceptions.RunTimeException;
 import cube.semantics.Variable;
+import cube.semantics.blocks.MainBlock;
 import cube.semantics.helpers.SeenVariableOperations;
 
 public class EvaluateType {
@@ -176,6 +177,7 @@ public class EvaluateType {
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
+			MainBlock.output_value += ":::::::::::::::: Condition is not valid" + "\n";
 			System.err.println(":::::::::::::::: Condition is not valid");
 		}
 		return toEvaluate;

@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -23,10 +24,12 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -55,14 +58,14 @@ public class Cube extends JPanel implements ActionListener{
 	private JLabel topPanel1Labels[] = new JLabel[4];
 	private JLabel topPanel2Labels[] = new JLabel[4];
 	private ImageIcon topPanel2Icons[] = new ImageIcon[4];
-	private String topPanel1Names[] = {"File", "Developers", "CubePiler", "Help"};
+	private String topPanel1Names[] = {"File", "Edit"};
 	
 	private Icon icons[] = new ImageIcon[4];
 	private String iconPaths[] = {"src/images/new_enter.png", "src/images/open_enter.png", "src/images/save_enter.png", "src/images/close_enter.png"};
 	
 	private String topPanel2IconNames[] = {"src/images/open.png", "src/images/new.png", "src/images/save.png", "src/images/close.png"};
 	private JPanel filePanels[] = new JPanel[8];
-	private Handler handler;
+	//private Handler handler;
 
 	private JTextPane textPane;
 	private JScrollPane scrollPane, belowScrollPane;
@@ -79,9 +82,12 @@ public class Cube extends JPanel implements ActionListener{
 	private JMenu menuFile, menuDevelopers, menuHelp;
 	private JMenuItem menuItem;
 	private JLabel console;
+	private String selectedPath;
 	
 	public static JTextPane consolePane;
-	public Cube() {
+	JFrame f;
+	public Cube(JFrame frame) {
+		f = frame;
 		this.setLayout(null);
 		this.setBackground(Color.GRAY);			
 
@@ -112,26 +118,45 @@ public class Cube extends JPanel implements ActionListener{
 
 		menuItem = new JMenuItem("Open file", icons[1]);
 		//menuItem.setMnemonic(KeyEvent.VK_B);
-		menuFile.add(menuItem);		
+		menuFile.add(menuItem);	
+		menuItem.addActionListener(this);
+		
+		menuItem = new JMenuItem("Open folder", icons[1]);
+		//menuItem.setMnemonic(KeyEvent.VK_B);
+		menuFile.add(menuItem);	
+		menuItem.addActionListener(this);
 
 		menuItem = new JMenuItem("Save", icons[2]);
 		//menuItem.setMnemonic(KeyEvent.VK_B);
 		menuFile.add(menuItem);		
+		menuItem.addActionListener(this);
 
 		menuItem = new JMenuItem("Save as...", icons[2]);
 		//menuItem.setMnemonic(KeyEvent.VK_B);
 		menuFile.add(menuItem);	
+		menuItem.addActionListener(this);
 		
 		for(int i = 0; i< 4; i++) {
 			menuFile.getItem(i).addActionListener(this);
 		}
 		
 		menuFile.addActionListener(this);
-		menuDevelopers = new JMenu("Developers");		
-		menuBar.add(menuDevelopers);
+		menuDevelopers = new JMenu("Edit"); 
 
-		menuHelp = new JMenu("Help");		
-		menuBar.add(menuHelp);
+		// Create menu items 
+		JMenuItem mi5 = new JMenuItem("cut");
+		JMenuItem mi6 = new JMenuItem("copy");		
+		JMenuItem mi7 = new JMenuItem("paste");
+		
+		mi7.addActionListener(this); 
+		mi5.addActionListener(this); 		
+		mi6.addActionListener(this); 
+		
+		menuDevelopers.add(mi5); 
+		menuDevelopers.add(mi6); 
+		menuDevelopers.add(mi7);  
+		
+		menuBar.add(menuDevelopers);
 
 		return menuBar;
 	}
@@ -139,9 +164,9 @@ public class Cube extends JPanel implements ActionListener{
 	private void init() {
 		sidePanel = new JPanel();
 		centerPanel = new JPanel();
-		handler = new Handler();
+		//handler = new Handler();
 		
-		for(int a = 0;a<4;a++) {
+		for(int a = 0;a<2;a++) {
 			topPanel1Labels[a] = new JLabel(topPanel1Names[a]);
 			topPanel2Icons[a] = new ImageIcon(topPanel2IconNames[a]);
 			topPanel2Labels[a] = new JLabel(topPanel2Icons[a]);
@@ -155,8 +180,11 @@ public class Cube extends JPanel implements ActionListener{
 	
 	private void createSidePanel() {
 		sidePanel.setPreferredSize(new Dimension(200, 700));
-		sidePanel.setBounds(2,0,220,700);			
+		sidePanel.setBounds(2,0,220,700);	
 		
+		this.add(sidePanel);
+		
+		/*
 		fileSystemView = FileSystemView.getFileSystemView();
 		
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
@@ -207,6 +235,7 @@ public class Cube extends JPanel implements ActionListener{
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,treeScroll,null);
         sidePanel.add(splitPane, BorderLayout.CENTER);
 		this.add(sidePanel);
+		*/
 	}
 	
 	private void createCenterPanel() {
@@ -228,6 +257,7 @@ public class Cube extends JPanel implements ActionListener{
 		console.setBounds(495, 440, 100, 40);
 		
 		consolePane = new JTextPane();
+		consolePane.setFont(new Font(Font.MONOSPACED, 1, 12));
 		consolePane.setBackground(new Color(211, 211, 211));
 		belowScrollPane = new JScrollPane(consolePane);
 		belowScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -245,7 +275,7 @@ public class Cube extends JPanel implements ActionListener{
 		this.add(centerPanel);
 
 	}
-	
+	/*
 	private class Handler implements MouseListener{
 
 		@Override
@@ -369,7 +399,7 @@ public class Cube extends JPanel implements ActionListener{
 		    System.out.println("Selected file: " + selectedFile.getAbsolutePath());
 		}
 	}
-	
+	*/
 	 private void showChildren(final DefaultMutableTreeNode node) {
 	        tree.setEnabled(false);
 
@@ -435,13 +465,7 @@ public class Cube extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent arg0) {
 		Object obj = arg0.getSource();
 		
-		if(obj == menuFile.getItem(3)|| obj == menuFile.getItem(2)) {
-			saveFile(textPane.getText());
-		}
-		else if(obj == menuFile.getItem(1)) {
-			openFile();
-		}
-		else if(obj == run) {
+		if(obj == run) {
 			 @SuppressWarnings("unused")
 			String msg = "";
 			 Lexer lexer = new Lexer();
@@ -490,6 +514,191 @@ public class Cube extends JPanel implements ActionListener{
 		        
 		        
 		}
+		else {
+			
+			String s = arg0.getActionCommand(); 
+			
+			if (s.equals("cut")) { 
+				textPane.cut(); 
+			} 
+			else if (s.equals("copy")) { 
+				textPane.copy(); 
+			} 
+			else if (s.equals("paste")) { 
+				textPane.paste(); 
+			} 
+			else if (s.equals("Save as...")) { 
+				// Create an object of JFileChooser class 
+				 saveAs();
+			} 
+			else if (s.equals("Save")) { 			 
+				if(selectedPath != null) {
+				 try { 
+					 	File selectedFile = new File(selectedPath);
+						// Create a file writer 
+						FileWriter wr = new FileWriter(selectedFile, false); 
+
+						// Create buffered writer to write 
+						BufferedWriter w = new BufferedWriter(wr); 
+
+						// Write 
+						w.write(textPane.getText()); 
+
+						w.flush(); 
+						w.close(); 
+					} 
+					catch (Exception evt) { 
+						JOptionPane.showMessageDialog(f, evt.getMessage()); 
+					} 
+				}else {
+					saveAs();
+				}
+			} 
+			else if (s.equals("Open file")) { 
+				// Create an object of JFileChooser class 			
+				JFileChooser j = new JFileChooser("c:"); 
+
+				// Invoke the showsOpenDialog function to show the save dialog 
+				int r = j.showOpenDialog(null); 
+
+				// If the user selects a file 
+				if (r == JFileChooser.APPROVE_OPTION) { 
+					// Set the label to the path of the selected directory
+					selectedPath = j.getSelectedFile().getAbsolutePath();
+					File fi = new File(selectedPath); 
+
+					try { 
+						// String 
+						String s1 = "", sl = ""; 
+						FileReader fr = new FileReader(fi);  
+						BufferedReader br = new BufferedReader(fr); 
+
+						sl = br.readLine(); 
+
+						// Take the input from the file 
+						while ((s1 = br.readLine()) != null) { 
+							sl = sl + "\n" + s1; 
+						} 
+
+						// Set the text 
+						textPane.setText(sl); 
+					} 
+					catch (Exception evt) { 
+						JOptionPane.showMessageDialog(f, evt.getMessage()); 
+					} 
+				} 			 
+			} 
+			else if (s.equals("New")) { 
+				textPane.setText(""); 
+			}else if (s.equals("Open folder")) {
+				JFileChooser j = new JFileChooser("c:");
+				j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int r = j.showOpenDialog(null);
+				this.f.remove(sidePanel);
+				
+				if(j.getSelectedFile() != null) {
+					String path = j.getSelectedFile().getAbsolutePath();
+					addFolderTree(path);
+				}
+				
+				sidePanel.repaint();
+				sidePanel.revalidate();
+				
+				this.f.revalidate();
+				this.f.repaint();
+				
+			}
+		}
+
+	}
+	public void addFolderTree(String path) {
+		sidePanel.removeAll();
+		//this.f.remove(sidePanel);
+		
+		fileSystemView = FileSystemView.getFileSystemView();
+		
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+        treeModel = new DefaultTreeModel(root);
+		
+        TreeSelectionListener treeSelectionListener = new TreeSelectionListener() {
+            public void valueChanged(TreeSelectionEvent tse){
+                DefaultMutableTreeNode node =
+                    (DefaultMutableTreeNode)tse.getPath().getLastPathComponent();
+                showChildren(node);
+            }            
+        };
+                             
+        // Show the file system roots.
+        /*File f = new File(".");
+        String parentPath = f.getAbsolutePath();        
+        int index = parentPath.lastIndexOf("\\");
+        
+        File parentFile = new File(parentPath.substring(0, index));*/
+        File parentFile = new File(path);
+        DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(parentFile);
+        root.add(parentNode);
+        File[] roots = fileSystemView.getFiles(parentFile, true);        
+        for (File fileSystemRoot : roots) {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(fileSystemRoot);
+            parentNode.add( node );
+            File[] files = fileSystemView.getFiles(fileSystemRoot, true);
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    node.add(new DefaultMutableTreeNode(file));
+                }
+            }
+        }
+
+        tree = new JTree(treeModel);
+        tree.setRootVisible(false);
+        tree.addTreeSelectionListener(treeSelectionListener);
+        tree.setCellRenderer(new FileTreeCellRenderer());
+        tree.expandRow(0);
+        JScrollPane treeScroll = new JScrollPane(tree);
+        
+        tree.setVisibleRowCount(15);
+                
+        Dimension widePreferred = new Dimension(
+            210,
+            650);
+        treeScroll.setPreferredSize( widePreferred );
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,treeScroll,null);
+        sidePanel.add(splitPane, BorderLayout.CENTER);
+        
+        this.add(sidePanel);   
+        this.f.revalidate();
+        this.f.repaint();
+       
+        
+	}
+	private void saveAs() {
+		 JFileChooser j = new JFileChooser("f:"); 
+
+			// Invoke the showsSaveDialog function to show the save dialog 
+			int r = j.showSaveDialog(null); 
+
+			if (r == JFileChooser.APPROVE_OPTION) { 
+
+				// Set the label to the path of the selected directory 
+				File fi = new File(j.getSelectedFile().getAbsolutePath()); 
+
+				try { 
+					// Create a file writer 
+					FileWriter wr = new FileWriter(fi, false); 
+
+					// Create buffered writer to write 
+					BufferedWriter w = new BufferedWriter(wr); 
+
+					// Write 
+					w.write(textPane.getText()); 
+
+					w.flush(); 
+					w.close(); 
+				} 
+				catch (Exception evt) { 
+					JOptionPane.showMessageDialog(f, evt.getMessage()); 
+				} 
+			} 			
 	}
 	public void saveFile(String toSave) {
 	    JFileChooser chooser = new JFileChooser();

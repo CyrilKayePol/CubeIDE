@@ -53,13 +53,13 @@ public class IfBlock extends Block{
 	}
 	@Override
 	public void whatToDo() {
+		transferMotherBlock();
 		if(toEvaluate) {
 		
 			for(int i = startline;i < endline;i++) {
 				Object b = lines_under_me.get(i);
 				
 				if(b!=null) {
-					
 					if(Assignment.checkIfAssignment(b.toString())) {
 						int begin = b.toString().indexOf("=");
 						
@@ -116,7 +116,7 @@ public class IfBlock extends Block{
 						Block block = sub_blocks.get(j);
 						if(block.getStartline() == i) {
 							block.whatToDo();
-							mother_block.setVariables(block.variables);
+							//mother_block.setVariables(block.variables);
 							break;
 						}
 					}
@@ -150,23 +150,61 @@ public class IfBlock extends Block{
 		
 		ArrayList<Object> params = new ArrayList<Object>();
 		StringBuilder inputParser = new StringBuilder(conditions);
-		for(String str:operands) {
-			Variable v = SeenVariableOperations.findInSeenVariables(str.trim());
-			if(v != null) {
-				int beginIndex = inputParser.indexOf(str.trim());
-				inputParser.insert(beginIndex, '[');
-				inputParser.insert(beginIndex+str.length()+1, ']');
-				params.add(str);
-				if(v.getValue() == null) params.add("");
-				else params.add(v.getValue().toString().trim());
+		if(operands.length > 1) {
+			for(String str:operands) {
+				Variable v = SeenVariableOperations.findInSeenVariables(str.trim());
+				if(v != null) {
+					int beginIndex = inputParser.indexOf(str.trim());
+					inputParser.insert(beginIndex, '[');
+					inputParser.insert(beginIndex+str.length()+1, ']');
+					params.add(str);
+					if(v.getValue() == null) params.add("");
+					else params.add(v.getValue().toString().trim());
+				}
 			}
 		}
+		else {
+			Variable v = SeenVariableOperations.findInSeenVariables(parenthesized.trim());
+			if(v != null) {
+				if(v.getType()==Type.BOOLEAN)
+				inputParser.replace(0, parenthesized.trim().length(), v.getValue().toString());
+			}
+		}
+		
 		try {
-			toEvaluate = (ExpressionParser.evaluate(inputParser.toString(),params.toArray()));
+			String input = inputParser.toString().replace("true", "(1>0)").replace("false", "(1<0)");
+			toEvaluate = (ExpressionParser.evaluate(input,params.toArray()));
+			
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
+			MainBlock.output_value += ":::::::::::::::: Condition is not valid" + "\n";
 			System.err.println(":::::::::::::Condition is not valid");
+			return;
+		}
+	}
+	public void transferMotherBlock() {
+		for(int i = 0; i < sub_blocks.size() ; i++){
+			Block b = sub_blocks.get(i);
+			
+			if(b.getStartline() > endline) {
+				for(int j = 0; j < elsifs.size() ; j++) {
+					ElsifBlock elsif = elsifs.get(j);
+					if(elsif.getStartline() < b.getStartline()) {
+						elsif.getSubBlocks().add(b);
+						
+						sub_blocks.remove(b);
+						i -=1;
+						break;
+					}
+					if(else_block !=null && else_block.getStartline() < b.getStartline()) {
+						else_block.getSubBlocks().add(b);
+						sub_blocks.remove(b);
+						i -=1;
+						break;
+					}
+				}
+			}
 		}
 	}
 }
