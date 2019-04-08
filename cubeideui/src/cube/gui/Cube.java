@@ -85,9 +85,7 @@ public class Cube extends JPanel implements ActionListener{
 	private String selectedPath;
 	
 	public static JTextPane consolePane;
-	JFrame f;	
-	public boolean flag = false;
-	
+	JFrame f;
 	public Cube(JFrame frame) {
 		f = frame;
 		this.setLayout(null);
@@ -465,12 +463,7 @@ public class Cube extends JPanel implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Object obj = arg0.getSource();		
-		
-		if(flag) {
-			flag = false;
-			return;
-		}
+		Object obj = arg0.getSource();
 		
 		if(obj == run) {
 			 @SuppressWarnings("unused")
@@ -561,7 +554,7 @@ public class Cube extends JPanel implements ActionListener{
 					saveAs();
 				}
 			} 
-			else if (s.equals("Open file")) {				
+			else if (s.equals("Open file")) { 
 				// Create an object of JFileChooser class 			
 				JFileChooser j = new JFileChooser("c:"); 
 
@@ -616,8 +609,6 @@ public class Cube extends JPanel implements ActionListener{
 				
 			}
 		}
-		
-		flag = true;
 
 	}
 	public void addFolderTree(String path) {
@@ -675,9 +666,9 @@ public class Cube extends JPanel implements ActionListener{
         sidePanel.add(splitPane, BorderLayout.CENTER);
         
         this.add(sidePanel);   
-//        this.f.revalidate();
-//        this.f.repaint();
-//       
+        this.f.revalidate();
+        this.f.repaint();
+       
         
 	}
 	private void saveAs() {
