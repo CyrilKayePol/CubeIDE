@@ -37,6 +37,7 @@ public class Variable {
 	}
 	
 	public void setValue(Object v) {
+		System.out.println("annyeong = "+v);
 		value =v;
 	}
 	

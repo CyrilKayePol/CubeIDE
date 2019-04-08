@@ -30,8 +30,9 @@ public class MethodBlock extends MainBlock{
 			Object b = lines_under_me.get(i);
 			
 			if(b!=null) {
-			
+				System.out.println("methodblock: "+b.toString());
 				if(Assignment.checkIfAssignment(b.toString())) {
+					System.out.println("line 35 methodblock");
 					int begin = b.toString().indexOf("=");
 					
 					String right = b.toString().substring(0, begin);
@@ -49,6 +50,7 @@ public class MethodBlock extends MainBlock{
 							if(type.equals(Type.EVAL)) {
 								EvaluateType.evaluate(v, left);
 								if(EvaluateType.checkIfValidArithmeticOperands()) {
+									
 									if(v.getType() == Type.INTEGER) v.setValue( (int) EvaluateType.eval());
 									else v.setValue(EvaluateType.eval());
 								}
@@ -63,6 +65,7 @@ public class MethodBlock extends MainBlock{
 				}
 				else {
 					if(b.toString().startsWith("print")) {
+						System.out.println("line 68 methodblock");
 						String line = b.toString().replace("print", "").replace("(", "").replace(")", "").trim();
 						String[] to_be_printed = line.split("\\+");
 						
