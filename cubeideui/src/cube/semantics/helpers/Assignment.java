@@ -8,7 +8,7 @@ public class Assignment {
 			MainBlock.output_value += "::::::::::: Invalid assignment" + "\n";
 			System.err.println("\t::::::::::: Invalid assignment");
 		}
-		else if(line.contains("=")){
+		else if(line.contains("=") && !line.contains("\"")){
 			return true;
 		}
 		return false;
