@@ -1,39 +1,26 @@
-
-var b = 7
-var c = 1
-
 fn main()
-
-	print ("Hello there from main!")
-	sayHelloThere(5, 4)
-
-	if(b < 8 & c > 0)
-		c = false | (b > c)
-		print ("Less than 8" + c)
-	elsif(b == 8 & c > 0)
-		c = true & (b < c)
-		print ("Greater" + c)
-	else
-		c = (100 * 9 + (21 * 2)) - 350/7
-		print ("Equal" + c)
-	end
-	justSomething()
-end
-
-fn sayHelloThere(var iterations, var a)
-	print "hey"
-	while(iterations > 0)
-		print ("yow")
-		a = 4
-		print ("a "+ a)
-		while (a > 0)
-			print ("Inner loop "+ a)
-			a = a-1
-		end
-		iterations = iterations -1
-	end
-end
-
-fn justSomething()
-	print ("hey there")
+   var a, b = 6, ld
+  	
+   var ld = b <4 & 5 > 6 | false
+   if(ld)
+   		var a = 0
+   		while(a<5)
+   			print("A: "+a)
+   			a = a+1
+   		end	
+   		print("Hi there damn")
+   elsif(b < 7)
+   	print("hi")
+   		while(b > 0)
+   			print("B: "+b)
+   			b = b-1
+   		end
+   		
+   		if(true)
+   			print("true with me")
+   		elsif(false)
+   			print("false")
+   		end
+   end
+  
 end

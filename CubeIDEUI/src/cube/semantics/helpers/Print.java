@@ -39,7 +39,7 @@ public class Print {
 		int counter = 1;
 
             try {
-            	 File file = new File("Cube.cube");
+            	 File file = new File("src/Cube.cube");
                  
                  if(file.isFile()) {
                      BufferedReader br = new BufferedReader(new FileReader(file));

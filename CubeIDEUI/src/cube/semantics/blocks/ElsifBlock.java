@@ -44,12 +44,9 @@ public class ElsifBlock extends Block{
 	@Override
 	public void whatToDo() {
 		if(toEvaluate) {
-			
 			for(int i = startline;i < endline;i++) {
 				Object b = lines_under_me.get(i);
-				
 				if(b!=null) {
-					
 					if(Assignment.checkIfAssignment(b.toString())) {
 						int begin = b.toString().indexOf("=");
 						
@@ -84,6 +81,7 @@ public class ElsifBlock extends Block{
 					}
 					else {
 						if(b.toString().startsWith("print")) {
+							
 							String line = b.toString().replace("print", "").replace("(", "").replace(")", "").trim();
 							String[] to_be_printed = line.split("\\+");
 							
@@ -104,6 +102,7 @@ public class ElsifBlock extends Block{
 				}
 				else {
 					for(int j = 0; j < sub_blocks.size(); j++) {
+						
 						Block block = sub_blocks.get(j);
 						
 						if(block.getStartline() == i) {
@@ -124,23 +123,35 @@ public class ElsifBlock extends Block{
 		
 		ArrayList<Object> params = new ArrayList<Object>();
 		StringBuilder inputParser = new StringBuilder(condition);
-		for(String str:operands) {
-			Variable v = SeenVariableOperations.findInSeenVariables(str.trim());
+		if(operands.length > 1) {
+			for(String str:operands) {
+				Variable v = SeenVariableOperations.findInSeenVariables(str.trim());
+				if(v != null) {
+					int beginIndex = inputParser.indexOf(str.trim());
+					inputParser.insert(beginIndex, '[');
+					inputParser.insert(beginIndex+str.length()+1, ']');
+					params.add(str);
+					if(v.getValue() == null) params.add("");
+					else params.add(v.getValue().toString().trim());
+				}
+			}
+		}
+		else {
+			Variable v = SeenVariableOperations.findInSeenVariables(parenthesized.trim());
 			if(v != null) {
-				int beginIndex = inputParser.indexOf(str.trim());
-				inputParser.insert(beginIndex, '[');
-				inputParser.insert(beginIndex+str.length()+1, ']');
-				params.add(str);
-				if(v.getValue() == null) params.add("");
-				else params.add(v.getValue().toString().trim());
+				if(v.getType()==Type.BOOLEAN)
+				inputParser.replace(0, parenthesized.trim().length(), v.getValue().toString());
 			}
 		}
 		try {
-			toEvaluate = (ExpressionParser.evaluate(inputParser.toString(),params.toArray()));
+			String input = inputParser.toString().replace("true", "(1>0)").replace("false", "(1<0)");
+			toEvaluate = (ExpressionParser.evaluate(input,params.toArray()));
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
+			MainBlock.output_value += ":::::::::::::::: Condition is not valid" + "\n";
 			System.err.println(":::::::::::::::: Condition is not valid");
+			return;
 		}
 	}
 }

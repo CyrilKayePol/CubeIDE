@@ -1,23 +1,24 @@
 package cube.semantics.math_operations;
 
+import cube.semantics.blocks.MainBlock;
+
 public class ExpressionParser {
 	private static final String[] operators = { "!=", "==", ">=", "<=", ">", "<", "|", "&", "*", "/", "+", "-", "^" };
 	public static boolean isValid = true;
     private static boolean parseAndEvaluateExpression(String ex){
-    	
             for (char c : ex.toCharArray())
             {
                     if (!Character.isSpaceChar(c)) {
                     	return parseWithStrings(ex);
                     }
             }
+            MainBlock.output_value += ":::::::::::::::: ERROR: Expression cannot be empty! " + "\n";
             System.err.println("ERROR: Expression cannot be empty!");
             isValid = false;
             return false;
     }
     @SafeVarargs
 	public static <T> boolean evaluate(String or, T... rep){
-    	
             String[] temp = new String[rep.length];
             for (int i = 0; i < rep.length; i++)
                     temp[i] = "" + rep[i];
@@ -25,22 +26,24 @@ public class ExpressionParser {
     }
 
     public static boolean evaluate(String or, String... vars){
-            if ((vars.length % 2 == 1 || vars.length < 2) && vars.length != 0)
-            {
-                    System.err.println(":::::::::: ERROR: Invalid arguments!");
-                    isValid = false;
-                    return false;
+            if ((vars.length % 2 == 1 || vars.length < 2) && vars.length != 0){
+            	 MainBlock.output_value += ":::::::::: ERROR: Invalid arguments!" + "\n";
+                 System.err.println(":::::::::: ERROR: Invalid arguments!");
+                 isValid = false;
+                 return false;
             }
             for (int i = 0; i < vars.length; i += 2)
                     or = or.replace("[" + vars[i] + "]", "" + vars[i + 1]);
            
-            return parseAndEvaluateExpression(or);
+            return parseAndEvaluateExpression(or.replaceAll("\\s", "").replace("(", "").replace(")", ""));
     }
     private static boolean parseWithStrings(String s) {
             int[] op = determineOperatorPrecedenceAndLocation(s);
             int start = op[0];
+      
             String left = s.substring(0, start).trim();
             String right = s.substring(op[1]).trim();
+            
             String oper = s.substring(start, op[1]).trim();
             int logType = logicalOperatorType(oper);
             if (logType == 0) // encounters OR- recurse
@@ -77,6 +80,7 @@ public class ExpressionParser {
                                     // Idea here is to weight logical operators so that they will still be selected over other operators
                                     // when no parens are present
                                     int parens = (logicalOperatorType(sub) > -1) ? parens(s, locInStr) - 1 : parens(s, locInStr);
+                                  
                                     if (containsMathematicalOperator(sub))
                                     {
                                             // Order of operations weighting
@@ -176,7 +180,8 @@ public class ExpressionParser {
             case "!=":
                     return left != right;
             default:
-                    System.err.println("ERROR: Operator type not recognized. " + op);
+            		MainBlock.output_value += ":::::::::: ERROR: Operator type not recognized. " + "\n";
+                    System.err.println("ERROR: Operator type not recognized. i came yow" + op);
                     isValid = false;
                     return false;
             }
@@ -209,6 +214,7 @@ public class ExpressionParser {
             case "^":
                     return Math.pow(result1, result2);
             default:
+            	MainBlock.output_value += ":::::::::: MATH ERROR: Mismatched Input. " + "\n";
                     System.err.println("MATH ERROR: Mismatched Input.");
                     isValid = false;
                     return 0;
@@ -223,7 +229,8 @@ public class ExpressionParser {
             case "!=":
                     return !left.equals(right);
             default:
-                    System.err.println("ERROR: Operator type not recognized. " + right);
+            	MainBlock.output_value += ":::::::::: ERROR: Operator type not recognized.  " + "\n";
+                    System.err.println("ERROR: Operator type not recognized. why would i came" + left);
                     isValid = false;
                     return false;
             }
