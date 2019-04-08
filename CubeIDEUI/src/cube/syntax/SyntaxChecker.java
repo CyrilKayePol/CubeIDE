@@ -108,9 +108,15 @@ public class SyntaxChecker {
 	}
 	
 	private void variableDeclarations() throws SourceException {
+		System.out.println("inside variable declarations: "+currentToken.getValue());
 		if (currentToken.getType() == Token.TokenType.USER_DEFINED_NAME) {
 			scan();
-			variableStatements();
+			
+			if(isFundOperator(currentToken.getType())) {
+				throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
+			}else {
+				variableStatements();
+			}
 			System.out.println("done in variable statements");
 		} 
 		else {
@@ -119,7 +125,7 @@ public class SyntaxChecker {
 	}
 	
 	private void variableStatements() throws SourceException {
-		System.out.println("inside variableStatements");
+		System.out.println("inside variableStatements: "+currentToken.getValue());
 		if (currentToken.getType() == Token.TokenType.SEPARATOR) {
 			scan();
 			variableDeclarations();
@@ -127,6 +133,7 @@ public class SyntaxChecker {
 			
 			scan();
 			System.out.println("--------");
+			isCodeBlock = true;
 			declarations();
 			System.out.println("*******");
 			
@@ -226,7 +233,7 @@ public class SyntaxChecker {
 		}
 		else if (currentToken.getType() == Token.TokenType.INTEGER || currentToken.getType() == Token.TokenType.FALSE
 				||currentToken.getType() == Token.TokenType.FLOAT || currentToken.getType() == Token.TokenType.TRUE
-				||currentToken.getType() == Token.TokenType.STRING) {
+				||currentToken.getType() == Token.TokenType.STRING || currentToken.getType() == Token.TokenType.USER_DEFINED_NAME) {
 			scan();
 			variableValues();
 			
@@ -282,7 +289,7 @@ public class SyntaxChecker {
 			scan();
 			variableValues();
 		} else {
-			throw new SourceException("Illegal variable statement!", currentToken.getStartingRow(), currentToken.getStartingColumn());
+			throw new SourceException("Illegal variable statement! yeah", currentToken.getStartingRow(), currentToken.getStartingColumn());
 		}
 	}
 	
@@ -595,6 +602,10 @@ public class SyntaxChecker {
   
 	private boolean isOperator(Token.TokenType type) {
 		return (type == Token.TokenType.ADDITION || type == Token.TokenType.SUBTRACTION || type == Token.TokenType.MULTIPLICATION || type == Token.TokenType.DIVISION || type == Token.TokenType.EXPONENT || type == Token.TokenType.MODULO || type == Token.TokenType.AND || type == Token.TokenType.OR || type == Token.TokenType.ASSIGNMENT);
+	}
+	
+	private boolean isFundOperator(Token.TokenType type) {
+		return (type == Token.TokenType.ADDITION || type == Token.TokenType.SUBTRACTION || type == Token.TokenType.MULTIPLICATION);
 	}
 	
 	private void printFunction() throws SourceException {

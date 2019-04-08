@@ -12,7 +12,6 @@ public class ExpressionParser {
                     	return parseWithStrings(ex);
                     }
             }
-            MainBlock.output_value += ":::::::::::::::: ERROR: Expression cannot be empty! " + "\n";
             System.err.println("ERROR: Expression cannot be empty!");
             isValid = false;
             return false;

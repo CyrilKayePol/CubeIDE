@@ -45,6 +45,12 @@ public class Lexer {
                 this.tokens.add(new Token("newLine", Token.TokenType.NEW_LINE, sLine, sColumn));
                 this.currentColumn = 0;
                 this.currentLine++;
+            } else if (c == '-') {
+            	if (Character.isDigit(peekNextCharacter()) && !Character.isDigit(peekPrevCharacter())) {
+            		handleNumbers();
+            	} else {
+            		handleSymbols();
+            	}
             } else if (isSymbol(c)) {
                 handleSymbols();
             }
@@ -56,9 +62,10 @@ public class Lexer {
     private void handleNumbers() throws SourceException {
         char c = this.source.charAt(this.currentCharIndex);
         boolean hasDecimalPoint = false;
+        boolean hasNegative = false;
         String number = "";
 
-        while (Character.isDigit(c) || c == '.') {
+        while (Character.isDigit(c) || c == '.' || c == '-') {
             if (Character.isDigit(c)) {
                 number += c;
             } else if (c == '.') {
@@ -67,6 +74,13 @@ public class Lexer {
                 } else {
                     number += c;
                     hasDecimalPoint = true;
+                }
+            } else if (c == '-') {
+                if (hasNegative) {
+                    break;
+                } else {
+                    number += c;
+                    hasNegative = true;
                 }
             } else {
                 throw new SourceException("Unexpected character.", this.currentLine, this.currentColumn);
@@ -244,5 +258,23 @@ public class Lexer {
         this.currentColumn++;
 
         return c;
+    }
+    
+    private char peekNextCharacter() {
+    	int nextIndex = currentCharIndex + 1;
+    	
+    	if (nextIndex >= this.source.length())
+            return '\0';
+
+        return this.source.charAt(nextIndex);
+    }
+    
+    private char peekPrevCharacter() {
+    	int prevIndex = currentCharIndex - 1;
+    	
+    	if (prevIndex < 0)
+            return '\0';
+
+        return this.source.charAt(prevIndex);
     }
 }
