@@ -169,9 +169,12 @@ public class SeenVariableOperations {
 			Variable vvv = null;
 			if(v!=null) {
 				vvv = new Variable(args[i], v.getValue());
+				System.out.println("====vvv "+ v.getValue() + "=== "+v.getName());
 			}
 			else {
 				vvv = new Variable(args[i], params[i]);
+				System.out.println("====vvv "+ vvv.getValue() + "=== "+vvv.getName());
+				
 			}
 			var[index] = vvv;
 			++index;
@@ -187,5 +190,12 @@ public class SeenVariableOperations {
 			}
 		}
 		return null;
+	}
+	public static void addToSeenVariables(Variable[] variables) {
+		for(Variable vv : variables) {
+			SeenVariableOperations.removeVariableIfExists(vv.getName());
+			seen_variables.add(vv);
+		}
+		SeenVariableOperations.setSeenVariables(seen_variables);
 	}
 }

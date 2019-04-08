@@ -21,8 +21,7 @@ public class MethodHelper {
 	
 	public static boolean functionCallMatcher(String toMatch) {
 		
-		toMatch = toMatch.replace(" ", "");
-		String regex="([a-zA-Z0-9]+)\\(((([a-zA-Z0-9]+)||(\"[a-zA-Z0-9]+\"))((,)(([a-zA-Z0-9]+)||(\\\"[a-zA-Z0-9]+\\\")))*?)*?\\)";
+		String regex="([a-zA-Z0-9]+)\\(((([a-zA-Z0-9]+)||(\"[a-zA-Z0-9!#&\\s]+\"))((,)(([a-zA-Z0-9!#&\\s]+)||(\\\"[a-zA-Z0-9!#&\\s]+\\\")))*?)*?\\)";
 	
 		functionCall = toMatch;
 		Pattern funcPattern = Pattern.compile(regex);
@@ -35,6 +34,7 @@ public class MethodHelper {
 		     }
 		     if(functionName.equals("print"))
 		    	 return false;
+		     
 		     System.out.println("\t[INFO] @MethodHelper a function call matched" );
 		     return true;
 		}

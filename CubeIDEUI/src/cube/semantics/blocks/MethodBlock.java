@@ -16,21 +16,42 @@ public class MethodBlock extends MainBlock{
 	}
 	
 	public void whatToDo() {
+		
 		super.defineBlocks(startline, endline);
 		super.defineMotherBlocks();
 		
 		directBlocks();
-	//	SeenVariableOperations.checkAssignments(line_hash, startline, endline);
-	
+		
 		super.defineSubBlocks();
 		super.findElsifsEnd();
 		
 		removeNotSubBlocks();
+		
+		//SeenVariableOperations.checkAssignments(line_hash, startline, endline);
+		
 		for(int i = startline;i < endline; i++) {
+			
 			Object b = lines_under_me.get(i);
-			
-			if(b!=null) {
-			
+			if(b == null)
+				for(int j = 0; j < sub_blocks.size(); j++) {
+					Block block = sub_blocks.get(j);
+					
+					if(block.getType() == 2) {
+						MethodBlock mBlock = (MethodBlock) block;
+						if(mBlock.getFunctionCall() == i) {
+							mBlock.whatToDo();
+							break;
+						}
+					}
+					
+					if(block.getStartline() == i) {
+						block.whatToDo();
+						break;
+					}
+					
+				}
+			else {
+				
 				if(Assignment.checkIfAssignment(b.toString())) {
 					int begin = b.toString().indexOf("=");
 					
@@ -62,7 +83,9 @@ public class MethodBlock extends MainBlock{
 					}
 				}
 				else {
+					
 					if(b.toString().startsWith("print")) {
+						System.out.println("i came here");
 						String line = b.toString().replace("print", "").replace("(", "").replace(")", "").trim();
 						String[] to_be_printed = line.split("\\+");
 						
@@ -81,6 +104,9 @@ public class MethodBlock extends MainBlock{
 					}
 				}
 			}
+			
+		}
+			/*
 			else {
 				for(int j = 0; j < sub_blocks.size(); j++) {
 					Block block = sub_blocks.get(j);
@@ -100,7 +126,7 @@ public class MethodBlock extends MainBlock{
 					
 				}
 			}
-		}
+		}*/
 		
 	}
 	

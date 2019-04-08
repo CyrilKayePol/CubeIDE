@@ -32,6 +32,9 @@ public class MainBlock extends Block{
 		initMainBlockLines(main_line, end_main);
 		
 		output_value = "";
+		seen_variables = new ArrayList<Variable>();
+		SeenVariableOperations.setSeenVariables(seen_variables);
+		
 	}
 	
 	public ArrayList<Variable> getSeenVariables(){
@@ -157,11 +160,22 @@ public class MainBlock extends Block{
 					
 					String[] args = MethodHelper.getArguments();
 					String[] params = MethodHelper.getParams();
-				
+					
+					for(int a = 0; a < args.length; a++)
+						System.out.println("args "+args[a]);
+					
+					for(int a = 0; a < params.length; a++)
+						System.out.println("params "+params[a]);
+					
 					if(args.length > 0)
 						method_block.addToSeenVariables(SeenVariableOperations.getArgsInSeenVariables(args, params));
 					
 					seen_variables = SeenVariableOperations.getSeenVariables();
+					
+					method_block.whatToDo();
+					SeenVariableOperations.addToSeenVariables(SeenVariableOperations.getArgsInSeenVariables(args, params));
+					System.out.println("or do you need more method block");
+					
 					
 					if(unmatched.size() > 0) {
 						method_block.setMotherBlock(unmatched.get(unmatched.size() -1));
@@ -171,6 +185,7 @@ public class MainBlock extends Block{
 						sub_blocks.add(method_block);
 					}
 					above.getSubBlocks().add(method_block);
+					
 				}
 				else {
 					RunTimeException.showException("Function is undefined. Number of arguments does not match. ");
@@ -191,14 +206,50 @@ public class MainBlock extends Block{
 						String var = line_var[j];
 						Variable new_var = null;
 						if(var.indexOf('=') > 0) {
+							
 							new_var = new Variable((var.substring(0, var.indexOf("="))).trim(),
 									var.substring(var.indexOf("=") +1, var.length()));
+							String left = var.substring(var.indexOf("=") +1, var.length());
+							String type = Variable.identifyTypes(left);
+							SeenVariableOperations.removeVariableIfExists(new_var.getName());
+							seen_variables.add(new_var);
+							
+							if(type.equals(Type.EVAL)) {
+								for(Variable v: seen_variables) {
+									
+									if(left.contains(v.getName())) {
+										System.out.println(v.getName() + " : "+v.getValue().toString());
+										left =left.replace(v.getName(), v.getValue().toString());
+									}
+								}
+								EvaluateType.evaluate(new_var, left);
+								System.out.println("left" +left);
+								if(EvaluateType.checkIfValidArithmeticOperands()) {
+									if(new_var.getType() == Type.INTEGER) new_var.setValue( (int) EvaluateType.eval());
+									else {
+										
+										new_var.setValue(EvaluateType.eval());
+									}
+								}
+								else {
+									new_var.setType(Type.BOOLEAN);
+									new_var.setValue(EvaluateType.evaluateLogicalOperation(left));
+								}
+							}
+							else {
+								for(Variable v: seen_variables) {
+									System.out.println(v.getName() + " : "+v.getValue().toString());
+									
+								}
+								System.out.println("lefttyyyy" +left);
+								new_var.setValue(left);
+							}
 						}
 						else {
 							new_var = new Variable(var.trim(), null);
 						}
-						SeenVariableOperations.removeVariableIfExists(new_var.getName());
-						seen_variables.add(new_var);
+						
+						//SeenVariableOperations.setSeenVariables(seen_variables);
 					}
 				}
 				else {
@@ -362,6 +413,7 @@ public class MainBlock extends Block{
 					if(block.getType() == 2) {
 						MethodBlock mBlock = (MethodBlock) block;
 						if(mBlock.getFunctionCall() == i) {
+							
 							mBlock.whatToDo();
 							
 							break;
@@ -379,7 +431,7 @@ public class MainBlock extends Block{
 	}
 	
 	public void initAll() {
-		initSeenVariables(1, end_main);
+		//initSeenVariables(1, end_main);
 		
 		defineBlocks(start_main, end_main);
 		defineMotherBlocks();
