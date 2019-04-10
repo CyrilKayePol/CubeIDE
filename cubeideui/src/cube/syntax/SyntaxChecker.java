@@ -73,10 +73,21 @@ public class SyntaxChecker {
 			scan();
 			functionDeclarations();
 		} else if (currentToken.getType() == Token.TokenType.NEW_LINE) {
+			
 			scan();
+			
 			declarations();
+			
 		} else if (currentToken.getType() == Token.TokenType.USER_DEFINED_NAME && isCodeBlock) {
 			codeBlock();
+		} else if(currentToken.getType() == Token.TokenType.USER_DEFINED_NAME && !isCodeBlock) {
+			scan();
+			if(currentToken.getType() == Token.TokenType.O_PARENTHESIS) {
+				scan();
+				functionCall(Token.TokenType.O_PARENTHESIS);
+				scan();
+				declarations();
+			}
 		} else if (currentToken.getType() == Token.TokenType.END) {
 			System.out.println("E "+endCount);
 			isCodeBlock = false;

@@ -124,10 +124,11 @@ public class EvaluateType {
 	            if (eat('(')) { // parentheses
 	                x = parseExpression();
 	                eat(')');
-	            } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
-	                while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
+	            } else if ((ch >= '0' && ch <= '9') || ch == '.' || ch == '-') { // numbers
+	                while ((ch >= '0' && ch <= '9') || ch == '.'|| ch == '-') nextChar();
 	                x = Double.parseDouble(str.substring(startPos, this.pos));
-	            } else {
+	            }
+	            else {
 	                throw new RuntimeException("Unexpected: " + (char)ch);
 	            }
 	            variable.setValue(x);
