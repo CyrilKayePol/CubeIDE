@@ -467,12 +467,14 @@ public class Cube extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent arg0) {
 		Object obj = arg0.getSource();		
 		
-		if(flag) {
+		/*if(flag) {
+			System.out.println("flag000000000000000000000000000000000000000000000");
 			flag = false;
 			return;
-		}
+		}*/
 		
 		if(obj == run) {
+			System.out.println("PRESSED RUN --------------------------------");
 			 @SuppressWarnings("unused")
 			String msg = "";
 			 Lexer lexer = new Lexer();

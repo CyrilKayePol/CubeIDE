@@ -67,6 +67,7 @@ public class SyntaxChecker {
 			System.out.println("I came at print");
 			scan();
 			printFunction();
+			declarations();
 		}
 		else if (currentToken.getType() == Token.TokenType.FN && !isCodeBlock) {
 			fwfCount+=1;
@@ -405,6 +406,7 @@ public class SyntaxChecker {
 	 }else if (currentToken.getType() == Token.TokenType.PRINT) {
 			
 			scan();
+			System.out.println("called at line408");
 			printFunction();
 	
 	 }	else if(currentToken.getType() == Token.TokenType.ELSE) {
@@ -631,6 +633,8 @@ public class SyntaxChecker {
 					if (currentToken.getType() == Token.TokenType.NEW_LINE) {
 							scan();
 							statements();
+							System.out.println("LEADER OF THE BAND");
+							
 					}else {
 						throw new SourceException("Illegal Statement", currentToken.getStartingRow(), currentToken.getStartingColumn());
 					}
