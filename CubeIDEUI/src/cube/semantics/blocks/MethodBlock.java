@@ -9,7 +9,7 @@ import cube.semantics.helpers.SeenVariableOperations;
 import cube.semantics.math_operations.EvaluateType;
 
 public class MethodBlock extends MainBlock{
-
+	private HashMap<String, Variable> scopedVariables = new HashMap<>();
 	private int functionCall = 0;
 	public MethodBlock(HashMap<Integer, String> line_hash, int start_line, int end_line) {
 		super(line_hash, Type.METHOD, end_line, start_line);
@@ -38,9 +38,9 @@ public class MethodBlock extends MainBlock{
 					String right = b.toString().substring(0, begin);
 					String left = b.toString().substring(begin+1).trim();
 					
-					Variable v = SeenVariableOperations.findInSeenVariables(right.trim());
+					Variable v = this._getVariable(right.trim());
 					if(v!=null) {
-						Variable v1 = SeenVariableOperations.findInSeenVariables(left);
+						Variable v1 = this._getVariable(left);
 						if(v1!=null) {
 							v.setValue(v1.getValue());
 						}
@@ -70,7 +70,7 @@ public class MethodBlock extends MainBlock{
 						String[] to_be_printed = line.split("\\+");
 						
 						for(int k = 0; k < to_be_printed.length; k ++) {
-							Variable v = SeenVariableOperations.findInSeenVariables(to_be_printed[k].trim());
+							Variable v = this._getVariable(to_be_printed[k].trim());
 							if(v!=null) {
 								MainBlock.output_value += v.getValue().toString().replace("\"", "");
 							}
@@ -126,9 +126,11 @@ public class MethodBlock extends MainBlock{
 	}
 	
 	public void addToSeenVariables(Variable[] variables) {
-		for(Variable vv : variables) {
-			SeenVariableOperations.removeVariableIfExists(vv.getName());
-			seen_variables.add(vv);
+		for(Variable variable : variables) {
+			SeenVariableOperations.removeVariableIfExists(variable.getName());
+			seen_variables.add(variable);
+
+			this.scopedVariables.put(variable.getName(), variable);
 		}
 		SeenVariableOperations.setSeenVariables(seen_variables);
 	}
@@ -139,5 +141,11 @@ public class MethodBlock extends MainBlock{
 	
 	public int getFunctionCall() {
 		return functionCall;
+	}
+
+	private Variable _getVariable(String variableName) {
+		return this.scopedVariables.containsKey(variableName)
+			? this.scopedVariables.get(variableName)
+			: SeenVariableOperations.findInSeenVariables(variableName);
 	}
 }
